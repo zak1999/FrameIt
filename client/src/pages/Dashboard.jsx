@@ -30,7 +30,9 @@ function Dashboard() {
     async function fetchData() {
       if (isAuthenticated) {
         const up = await createOwner(user.email);
+        console.log(up);
         setIsUp(up);
+        console.log('Yes');
         setTimeout(() => {
           setLoading(false);
         }, 500);

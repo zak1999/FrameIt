@@ -12,7 +12,7 @@ const socketIo = require('socket.io');
 /* global io */
 global.io = socketIo(server, {
   cors: {
-    origin: ['http://localhost', 'https://frame-it.vercel.app'],
+    origin: ['http://localhost:3000', 'https://frame-it.vercel.app'],
   },
   methods: ['GET', 'POST', 'DELETE'],
 }); //in case server and client run on different urls

@@ -14,7 +14,7 @@ export async function createOwner(user_email) {
     const data = {
       email: user_email,
     };
-    const response = await fetch(`http://localhost:3001/users/owner`, {
+    const response = await fetch(`http://localhost:3005/users/owner`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ export async function createParty(email) {
   const data = {
     email: email,
   };
-  const response = fetch(`http://localhost:3001/users/party/create`, {
+  const response = fetch(`http://localhost:3005/users/party/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ export async function createParty(email) {
 }
 
 export async function checkForParty(email) {
-  const response = fetch(`http://localhost:3001/users/info/party/${email}`)
+  const response = fetch(`http://localhost:3005/users/info/party/${email}`)
     .then((response) => {
       if (response.status === 200) return response.text();
       else return false;
@@ -58,7 +58,7 @@ export async function checkForParty(email) {
 }
 
 export async function deleteParty(id) {
-  const response = fetch(`http://localhost:3001/party`, {
+  const response = fetch(`http://localhost:3005/party`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ export async function sendUrlToDb(url, id) {
     url: url,
     partyId: id,
   };
-  const response = fetch(`http://localhost:3001/party/upload`, {
+  const response = fetch(`http://localhost:3005/party/upload`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ export async function sendUrlToDb(url, id) {
 
 export async function getSocketRoomId(id) {
   try {
-    const response = fetch(`http://localhost:3001/party/socketRoom/${id}`).then(
+    const response = fetch(`http://localhost:3005/party/socketRoom/${id}`).then(
       (response) => response.text()
     );
     return response;
@@ -119,7 +119,7 @@ export async function getSocketRoomId(id) {
 
 export async function checkRoom(id) {
   try {
-    const response = fetch(`http://localhost:3001/party/${id}`)
+    const response = fetch(`http://localhost:3005/party/${id}`)
       .then((response) => response.json())
       .then((res) => res);
     return response;

@@ -1,7 +1,12 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { generateRandomString, sendImage, sendUrlToDb, checkRoom } from '../ApiServices';
+import {
+  generateRandomString,
+  sendImage,
+  sendUrlToDb,
+  checkRoom,
+} from '../ApiServices';
 import { useAuth0 } from '@auth0/auth0-react';
 import '../styles/Dashboard.css';
 import { compress, downloadFile } from 'image-conversion';
