@@ -14,7 +14,7 @@ function Home() {
       console.log(isAuthenticated);
       navigate(`/dashboard`);
     }
-  }, [isAuthenticated]);
+  });
   // TODO: HERE DO A: "JOIN A PARTY" BUTTON -> OPEN INPUT, you type in the code and you get redirected to that party room.
   // TODO: INSERT FOOTER WITH MY INFO
   return (
