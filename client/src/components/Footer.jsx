@@ -9,13 +9,13 @@ function Footer() {
         <p>Feel free to make contributions or contact me at:</p>
       </div>
       <div className="footerLinks">
-      <a href='https://github.com/Al366io'>
+        <a href="https://github.com/Al366io">
           <img
             className="icon"
             src={process.env.PUBLIC_URL + '/assets/githubIcon.png'}
           ></img>
         </a>
-        <a href='https://www.linkedin.com/in/alessio-nannipieri-a27550218/'>
+        <a href="https://www.linkedin.com/in/alessio-nannipieri-a27550218/">
           <img
             className="icon"
             src={process.env.PUBLIC_URL + '/assets/linkedinIcon.png'}

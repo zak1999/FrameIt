@@ -14,17 +14,15 @@ export async function createOwner(user_email) {
     const data = {
       email: user_email,
     };
-    const response = await fetch(`https://www.frameit.social/users/owner`, {
+    const response = await fetch(`http://localhost:3001/users/owner`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     }).then((response) => response);
-    if (response.status == 204) 
-      return 1
-    else
-      return 0
+    if (response.status == 204) return 1;
+    else return 0;
   } catch (error) {
     return 0;
   }
@@ -34,7 +32,7 @@ export async function createParty(email) {
   const data = {
     email: email,
   };
-  const response = fetch(`https://www.frameit.social/users/party/create`, {
+  const response = fetch(`http://localhost:3001/users/party/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -47,7 +45,7 @@ export async function createParty(email) {
 }
 
 export async function checkForParty(email) {
-  const response = fetch(`https://www.frameit.social/users/info/party/${email}`)
+  const response = fetch(`http://localhost:3001/users/info/party/${email}`)
     .then((response) => {
       if (response.status === 200) return response.text();
       else return false;
@@ -60,7 +58,7 @@ export async function checkForParty(email) {
 }
 
 export async function deleteParty(id) {
-  const response = fetch(`https://www.frameit.social/party`, {
+  const response = fetch(`http://localhost:3001/party`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -77,12 +75,15 @@ export async function sendImage(data) {
   formData.append('file', data, generateRandomString(10));
   formData.append('upload_preset', 'frameit');
 
-  const response = fetch(`https://api.cloudinary.com/v1_1/dkqmqt1gr/image/upload`, {
-    method: 'POST',
-    body: formData,
-  }).then(async (res) => {
+  const response = fetch(
+    `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/image/upload`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  ).then(async (res) => {
     const result = await res.json();
-    return result["secure_url"];
+    return result['secure_url'];
   });
   return response;
 }
@@ -90,9 +91,9 @@ export async function sendImage(data) {
 export async function sendUrlToDb(url, id) {
   const data = {
     url: url,
-    partyId: id
+    partyId: id,
   };
-  const response = fetch(`https://www.frameit.social/party/upload`, {
+  const response = fetch(`http://localhost:3001/party/upload`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -104,9 +105,9 @@ export async function sendUrlToDb(url, id) {
   return response;
 }
 
-export async function getSocketRoomId (id) {
+export async function getSocketRoomId(id) {
   try {
-    const response = fetch(`https://www.frameit.social/party/socketRoom/${id}`).then(
+    const response = fetch(`http://localhost:3001/party/socketRoom/${id}`).then(
       (response) => response.text()
     );
     return response;
@@ -116,14 +117,14 @@ export async function getSocketRoomId (id) {
   }
 }
 
-export async function checkRoom (id) {
+export async function checkRoom(id) {
   try {
-    const response = fetch(`https://www.frameit.social/party/${id}`).then(
-      (response) => response.json()
-    ).then((res) => res)
+    const response = fetch(`http://localhost:3001/party/${id}`)
+      .then((response) => response.json())
+      .then((res) => res);
     return response;
   } catch (error) {
     console.log(error);
     return false;
   }
-} 
+}
