@@ -11,9 +11,10 @@ function Home() {
 
   useEffect(() => {
     if (isAuthenticated) {
+      console.log(isAuthenticated);
       navigate(`/dashboard`);
     }
-  });
+  }, [isAuthenticated]);
   // TODO: HERE DO A: "JOIN A PARTY" BUTTON -> OPEN INPUT, you type in the code and you get redirected to that party room.
   // TODO: INSERT FOOTER WITH MY INFO
   return (
@@ -31,7 +32,14 @@ function Home() {
             <div className="slogan">
               <h1 className="removeDefaultStyling"> Frame It </h1>
               <h2 className="removeDefaultStyling"> Share It </h2>
-              <button onClick={() => loginWithPopup()} className="logButton">
+              <button
+                onClick={() =>
+                  loginWithPopup({
+                    returnTo: 'http://localhost:3000/dashboard',
+                  })
+                }
+                className="logButton"
+              >
                 LOGIN
               </button>
             </div>
@@ -43,7 +51,7 @@ function Home() {
             <span>Enjoy your memories</span>
           </div>
         </div>
-        <Footer/>
+        <Footer />
       </div>
     </div>
   );
