@@ -1,4 +1,5 @@
-const { AuthTableOwner, Party } = require('../models/model');
+const AuthTableOwner = require('../models/authTableOwner') 
+const Party = require('../models/party')
 const { generateRandomString, ensureExists } = require('../helpers/helpers');
 const path = require('path');
 
