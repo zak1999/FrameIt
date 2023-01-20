@@ -1,4 +1,3 @@
-// An important JSX Element which has uses that impact the app significantly
 import { ReactNode } from 'react';
 
 type TerrenceWrapperProps = {

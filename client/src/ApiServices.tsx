@@ -128,7 +128,7 @@ export async function sendUrlToDb(url: string, id: string): Promise<string> {
   // return response;
 }
 
-export async function getSocketRoomId(id: string): Promise<string> {
+export async function getSocketRoomId(id: string | undefined): Promise<string> {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/party/socketRoom/${id}`
@@ -136,21 +136,17 @@ export async function getSocketRoomId(id: string): Promise<string> {
     // .then((response) => response.text());
     return await response.text();
   } catch (error) {
-    console.log(error);
     return '';
   }
 }
 
-export async function checkRoom(id: string) {
+export async function checkRoom(id: string | undefined) {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/party/${id}`
     );
-    // .then((response) => response.json())
-    // .then((res) => res);
     return await response.json();
   } catch (error) {
-    console.log(error);
     return { exists: false };
   }
 }
