@@ -82,7 +82,7 @@ function PartyRoomPH() {
   }
   return (
     <div className="dashboardWrapper">
-      <Navbar></Navbar>
+      <Navbar />
       {!roomExists ? (
         <h1>Wrong Room :C</h1>
       ) : (

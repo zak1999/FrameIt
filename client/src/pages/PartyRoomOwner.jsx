@@ -1,5 +1,5 @@
 import React from 'react';
-import { checkRoom } from '../ApiServices'
+import { checkRoom } from '../ApiServices';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -24,8 +24,8 @@ function PartyRoomOwner() {
       navigate(`/`);
     }
 
-    async function fetchRoom(){
-      const exist = await checkRoom(id)
+    async function fetchRoom() {
+      const exist = await checkRoom(id);
       setRoomExists(exist.exists);
     }
     fetchRoom();
@@ -67,8 +67,8 @@ function PartyRoomOwner() {
 
   return (
     <div className="dashboardWrapper">
-      <Navbar></Navbar>
-      {(isAuthenticated && roomExists)? (
+      <Navbar />
+      {isAuthenticated && roomExists ? (
         <>
           <div className="qrWrap">
             <h3 className="removeDefaultStyling">Room #{id}</h3>

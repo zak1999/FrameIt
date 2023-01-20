@@ -1,26 +1,24 @@
-import React from 'react';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
+// import React from 'react';
+import { useEffect, useState, MouseEvent, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import Navbar from '../components/Navbar';
+import '../styles/Dashboard.css';
+import Loading from '../components/Loading';
 import {
   createOwner,
   createParty,
   checkForParty,
   deleteParty,
 } from '../ApiServices';
-import Navbar from '../components/Navbar';
-import '../styles/Dashboard.css';
-import { MagnifyingGlass } from 'react-loader-spinner';
 
-function Dashboard() {
-  const { id } = useParams();
+function Dashboard(): ReactNode {
   const navigate = useNavigate();
   const { isAuthenticated, user, logout, loginWithRedirect } = useAuth0();
-  const [partyId, setPartyId] = useState('');
-  const [isUp, setIsUp] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [askConfirm, setAskConfirm] = useState(false);
+  const [partyId, setPartyId] = useState<string | boolean>('');
+  const [isUp, setIsUp] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [askConfirm, setAskConfirm] = useState<boolean>(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -29,69 +27,59 @@ function Dashboard() {
 
     async function fetchData() {
       if (isAuthenticated) {
-        const up = await createOwner(user.email);
-        console.log(up);
+        const userEmail = user && user.email ? user.email : '';
+        const up = await createOwner(userEmail);
+        // const up = await createOwner(user.email);
         setIsUp(up);
-        console.log('Yes');
+
         setTimeout(() => {
           setLoading(false);
         }, 500);
+
         if (isUp) {
-          const partyId = await checkForParty(user.email);
+          const partyId = await checkForParty(userEmail);
           if (partyId) setPartyId(partyId);
         }
       }
     }
     fetchData();
     setTimeout(() => {
-      if (!isAuthenticated) {
-        navigate(`/`);
-      }
+      if (!isAuthenticated) navigate(`/`);
     }, 500);
   }, []);
 
-  const handleCreate = async (e) => {
+  const handleCreate = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const id = await createParty(user.email);
-    if (id) {
-      navigate(`/party/${id}`);
+    if (user && user.email) {
+      const id = await createParty(user.email);
+      if (id) navigate(`/party/${id}`);
     }
   };
 
   const handleRedirect = () => {
-    if (partyId) {
-      navigate(`/party/${partyId}`);
-    }
+    if (partyId) navigate(`/party/${partyId}`);
   };
+
   const confirm = () => {
     setAskConfirm(true);
   };
+
   const handleDelete = async () => {
     setAskConfirm(false);
-    const done = await deleteParty(partyId);
-    if (done == 'Not Found') {
+    const done = await deleteParty(partyId as string);
+    if (done === 'Not Found') {
       return;
     }
     setPartyId('');
     return;
   };
+
   return (
     <div className="App">
       <div className="dashboardWrapper">
-        <Navbar></Navbar>
+        <Navbar />
         {loading ? (
-          <div className="loaderWrap">
-            <MagnifyingGlass
-              visible={true}
-              height="90"
-              width="90"
-              ariaLabel="MagnifyingGlass-loading"
-              wrapperStyle={{}}
-              wrapperClass="MagnifyingGlass-wrapper"
-              glassColor="#ecbef7"
-              color="#8139d1"
-            />
-          </div>
+          <Loading />
         ) : (
           <>
             {!isUp ? (
@@ -102,7 +90,10 @@ function Dashboard() {
               <>
                 <div className="firstHalfDash">
                   {isAuthenticated ? (
-                    <div className="hello"> Hello, {user.given_name} ! </div>
+                    <div className="hello">
+                      {' '}
+                      Hello {(user && user.given_name) || ''}!{' '}
+                    </div>
                   ) : (
                     ''
                   )}
@@ -153,7 +144,7 @@ function Dashboard() {
                 </div>
                 <div className="secondHalfDash"></div>
                 {isAuthenticated ? (
-                  <div className="navButton" onClick={logout}>
+                  <div className="navButton" onClick={() => logout()}>
                     <button className="logButton">LOGOUT</button>
                   </div>
                 ) : (
