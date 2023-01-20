@@ -11,7 +11,7 @@ export function generateRandomString(length: number): string {
 }
 
 // ✅
-export async function createOwner(userEmail: string): Promise<number> {
+export async function createOwner(userEmail: string): Promise<boolean> {
   try {
     const data = {
       email: userEmail,
@@ -26,10 +26,10 @@ export async function createOwner(userEmail: string): Promise<number> {
         body: JSON.stringify(data),
       }
     );
-    return response.status === 204 ? 1 : 0;
+    return response.status === 204 ? true : false;
   } catch (error) {
     console.log(error);
-    return 0;
+    return false;
   }
 }
 
