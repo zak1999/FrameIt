@@ -22,4 +22,4 @@ async function synchronize() {
   await AuthTableUser.sync(); 
 } synchronize();
 
-module.exports = { AuthTableUser };
+module.exports = AuthTableUser;

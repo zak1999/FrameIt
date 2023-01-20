@@ -25,5 +25,8 @@ const Party = sequelize.define('Party', {
     allowNull: false
   }
 })
-Party.sync();
+async function synchronize() {
+  await Party.sync();
+} synchronize();
+
 module.exports = Party;

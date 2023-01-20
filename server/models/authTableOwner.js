@@ -17,5 +17,7 @@ const AuthTableOwner = sequelize.define('AuthTableOwner', {
     allowNull: true
   }
 })
-AuthTableOwner.sync();
+async function synchronize() {
+  await AuthTableOwner.sync();
+} synchronize();
 module.exports = AuthTableOwner;
