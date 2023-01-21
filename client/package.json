@@ -19,6 +19,7 @@
     "cloudinary": "^1.33.0",
     "font-awesome": "^4.7.0",
     "jest-mock": "^29.3.1",
+    "jest-util": "^29.3.1",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
