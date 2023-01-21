@@ -8,7 +8,7 @@ import AppInfo from '../components/AppInfo';
 import TerrenceWrapper from '../components/TerrenceWrapper';
 import Wrapper from '../components/Wrapper';
 
-function Home(): ReactNode {
+function Home(): JSX.Element {
   const { isAuthenticated, loginWithPopup } = useAuth0();
   const navigate = useNavigate();
 

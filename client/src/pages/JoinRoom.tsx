@@ -9,7 +9,7 @@ import Wrapper from '../components/Wrapper';
 import TerrenceWrapper from '../components/TerrenceWrapper';
 
 // reachable at /party/:id/ph
-function JoinRoom(): ReactNode {
+function JoinRoom(): JSX.Element {
   const { id } = useParams();
   const navigate = useNavigate();
   function handleRedirect() {
