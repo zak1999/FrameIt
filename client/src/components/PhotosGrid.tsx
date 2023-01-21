@@ -1,4 +1,3 @@
-// import React from 'react';
 import { useEffect, useState } from 'react';
 import { Grid } from 'react-loader-spinner';
 import { io } from 'socket.io-client';
@@ -90,6 +89,7 @@ function PhotosGrid({ id }: PhotosGridProps) {
           DOWNLOAD ⬇️
         </button>
       </div>
+
       <div className={loading ? 'loaderWrap' : 'invisible'}>
         <Grid
           height="80"
@@ -102,6 +102,7 @@ function PhotosGrid({ id }: PhotosGridProps) {
           visible={true}
         />
       </div>
+
       <div className="container">
         <div className="gridContainer">
           {photos.map((pic, idx) => {
@@ -116,7 +117,6 @@ function PhotosGrid({ id }: PhotosGridProps) {
             );
           })}
         </div>
-        {/* )} */}
       </div>
     </div>
   );

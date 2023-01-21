@@ -7,6 +7,7 @@ import Logo from '../components/Logo';
 import AppInfo from '../components/AppInfo';
 import TerrenceWrapper from '../components/TerrenceWrapper';
 import Wrapper from '../components/Wrapper';
+import SloganWrapper from '../components/SloganWrapper';
 
 function Home(): JSX.Element {
   const { isAuthenticated, loginWithPopup } = useAuth0();
@@ -20,10 +21,7 @@ function Home(): JSX.Element {
     <Wrapper>
       <TerrenceWrapper>
         <Logo />
-        <div className="slogan">
-          <h1 className="removeDefaultStyling"> Frame It </h1>
-          <h2 className="removeDefaultStyling"> Share It </h2>
-
+        <SloganWrapper className="slogan">
           <button
             onClick={() =>
               loginWithPopup({
@@ -34,7 +32,7 @@ function Home(): JSX.Element {
           >
             LOGIN
           </button>
-        </div>
+        </SloganWrapper>
       </TerrenceWrapper>
       <AppInfo />
     </Wrapper>
