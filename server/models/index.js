@@ -16,9 +16,9 @@ const sequelize = new Sequelize(process.env.DB_CONNECTION_STRING, {
 async function start() {
   try {
     await sequelize.authenticate();
-    console.log('Successful Connection to the Database 🚀');
+    // console.log('Successful Connection to the Database 🚀');
   } catch (error) {
-    console.log('err' + error);
+    // console.log('err' + error);
   }
 }
 start();

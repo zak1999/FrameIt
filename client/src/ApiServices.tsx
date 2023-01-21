@@ -140,7 +140,7 @@ export async function getSocketRoomId(id: string | undefined): Promise<string> {
   }
 }
 
-export async function checkRoom(id: string | undefined) {
+export async function checkRoom(id: string) {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/party/${id}`

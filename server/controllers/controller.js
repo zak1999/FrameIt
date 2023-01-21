@@ -1,5 +1,5 @@
-const AuthTableOwner = require('../models/authTableOwner') 
-const Party = require('../models/party')
+const AuthTableOwner = require('../models/authTableOwner');
+const Party = require('../models/party');
 const { generateRandomString, ensureExists } = require('../helpers/helpers');
 const path = require('path');
 
@@ -10,11 +10,7 @@ async function createIfNotThere(user) {
   const alreadyInDb = await AuthTableOwner.findOne({
     where: { user_email: user.user_email },
   });
-  if (alreadyInDb) {
-    return;
-  } else {
-    AuthTableOwner.create(user);
-  }
+  return alreadyInDb ? true : false;
 }
 
 exports.createOwner = async (req, res) => {
@@ -23,9 +19,14 @@ exports.createOwner = async (req, res) => {
     const user = {
       user_email: email,
     };
-    await createIfNotThere(user);
-    res.status(204);
-    res.send('true');
+    const exists = await createIfNotThere(user);
+    if (exists) {
+      res.sendStatus(400);
+    } else {
+      await AuthTableOwner.create(user);
+      res.status(204);
+      res.send('true');
+    }
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
@@ -35,10 +36,10 @@ exports.createOwner = async (req, res) => {
 exports.createParty = async (req, res) => {
   try {
     const email = req.body.email;
-    const id = generateRandomString(6);
     const user = await AuthTableOwner.findOne({
       where: { user_email: email },
     });
+    // console.log(user);
     if (!user) {
       res.sendStatus(404); // user not found
       return;
@@ -47,6 +48,7 @@ exports.createParty = async (req, res) => {
       res.sendStatus(400); // bad request, user already has a party
       return;
     }
+    const id = generateRandomString(6);
     await AuthTableOwner.update(
       {
         party_id: id,
@@ -55,6 +57,7 @@ exports.createParty = async (req, res) => {
         where: { user_email: email },
       }
     );
+
     const party = {
       party_id: id,
       pics: JSON.stringify([]),
@@ -62,7 +65,7 @@ exports.createParty = async (req, res) => {
     };
     await Party.create(party);
     // here call the function that will set the interval to update this particular room
-    let interval = await this.triggerSocket(party.socket_room_id, id);
+    const interval = await this.triggerSocket(party.socket_room_id, id);
     mapOfIntervals[id] = interval;
     res.status(200);
     res.send(id);
@@ -177,7 +180,7 @@ exports.socketIoUpdateParty = async (socketRoom, id) => {
     let picsArr = JSON.parse(partyObj.pics);
     io.to(socketRoom).emit('pics', picsArr);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
   return;
 };
