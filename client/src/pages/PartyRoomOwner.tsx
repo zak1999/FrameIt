@@ -1,4 +1,3 @@
-import React from 'react';
 import { checkRoom } from '../ApiServices';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -11,30 +10,28 @@ import Navbar from '../components/Navbar';
 import '../styles/Dashboard.css';
 import '../styles/animations.css';
 
-function PartyRoomOwner() {
+function PartyRoomOwner(): JSX.Element {
   const { id } = useParams();
-  const [copied, setCopied] = useState(false);
-  const [canShare, setCanShare] = useState(false);
+  const [copied, setCopied] = useState<boolean>(false);
+  const [canShare, setCanShare] = useState<boolean>(false);
   const navigate = useNavigate();
-  const [roomExists, setRoomExists] = useState(true);
+  const [roomExists, setRoomExists] = useState<boolean>(true);
   const { isAuthenticated } = useAuth0();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate(`/`);
-    }
+    if (!isAuthenticated) navigate(`/`);
 
     async function fetchRoom() {
-      const exist = await checkRoom(id);
+      const exist = await checkRoom(id || '');
       setRoomExists(exist.exists);
     }
     fetchRoom();
 
-    if (navigator.share) {
-      setCanShare(true);
-    } else {
-      setCanShare(false);
-    }
+    // if (navigator.share) {
+    //   setCanShare(true);
+    // } else {
+    //   setCanShare(false);
+    // }
   }, []);
 
   function handleShare() {
@@ -75,7 +72,7 @@ function PartyRoomOwner() {
             <QRCodeSVG
               bgColor="transparent"
               id="dash-qr"
-              size="130px"
+              size={130}
               value={`https://frame-it.vercel.app/party/${id}/ph`}
             />
             <button className="mainButton" onClick={handleShare}>
@@ -92,7 +89,7 @@ function PartyRoomOwner() {
             </button>
           </div>
           <div className="secondHalf">
-            <PhotosGrid id={id} />
+            <PhotosGrid id={id || ''} />
           </div>
         </>
       ) : (

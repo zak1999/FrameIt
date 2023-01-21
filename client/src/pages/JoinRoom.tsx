@@ -7,9 +7,10 @@ import Logo from '../components/Logo';
 import '../styles/Dashboard.css';
 import Wrapper from '../components/Wrapper';
 import TerrenceWrapper from '../components/TerrenceWrapper';
+import SloganWrapper from '../components/SloganWrapper';
 
 // reachable at /party/:id/ph
-function JoinRoom(): ReactNode {
+function JoinRoom(): JSX.Element {
   const { id } = useParams();
   const navigate = useNavigate();
   function handleRedirect() {
@@ -20,13 +21,11 @@ function JoinRoom(): ReactNode {
     <Wrapper>
       <TerrenceWrapper>
         <Logo />
-        <div className="welcome">
-          <h1 className="removeDefaultStyling"> Frame It </h1>
-          <h2 className="removeDefaultStyling"> Share It </h2>
+        <SloganWrapper className="welcome">
           <button onClick={() => handleRedirect()} className="logButton">
             Join As Guest
           </button>
-        </div>
+        </SloganWrapper>
       </TerrenceWrapper>
       <AppInfo />
     </Wrapper>

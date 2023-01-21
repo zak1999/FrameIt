@@ -12,7 +12,7 @@ import {
   deleteParty,
 } from '../ApiServices';
 
-function Dashboard(): ReactNode {
+function Dashboard(): JSX.Element {
   const navigate = useNavigate();
   const { isAuthenticated, user, logout, loginWithRedirect } = useAuth0();
   const [partyId, setPartyId] = useState<string | boolean>('');
