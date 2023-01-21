@@ -9,7 +9,7 @@ import TerrenceWrapper from '../components/TerrenceWrapper';
 import Wrapper from '../components/Wrapper';
 import SloganWrapper from '../components/SloganWrapper';
 
-function Home(): ReactNode {
+function Home(): JSX.Element {
   const { isAuthenticated, loginWithPopup } = useAuth0();
   const navigate = useNavigate();
 

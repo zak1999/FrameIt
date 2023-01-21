@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ReactNode } from 'react';
 import '../styles/Dashboard.css';
 
-function NoPage(): ReactNode {
+function NoPage(): JSX.Element {
   return (
     <>
       <Navbar />
