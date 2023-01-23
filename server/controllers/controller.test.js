@@ -33,12 +33,17 @@ describe('Controller Testing', () => {
       const res1 = await request
         .post('/users/owner')
         .send({ email: 'testing@email.com' });
+      expect(res1.status).toBe(200);
+      expect(res1.body).toEqual({
+        status: 'User Created',
+        email: 'testing@email.com',
+      });
+
       const res2 = await request
         .post('/users/owner')
         .send({ email: 'testing@email.com' });
 
-      expect(res1.status).toBe(204);
-      expect(res2.status).toBe(204);
+      expect(res2.status).toBe(403);
     });
 
     afterEach(async () => {

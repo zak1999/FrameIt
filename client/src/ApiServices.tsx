@@ -26,7 +26,7 @@ export async function createOwner(userEmail: string): Promise<boolean> {
         body: JSON.stringify(data),
       }
     );
-    return response.status === 204 ? true : false;
+    return response.status === 200 ? true : false;
   } catch (error) {
     console.log(error);
     return false;

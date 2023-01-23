@@ -4,33 +4,68 @@ const { generateRandomString, ensureExists } = require('../helpers/helpers');
 const path = require('path');
 
 // obj that will map the intervals of the parties. -> mapOfIntervals = { partyId: interval }
-let mapOfIntervals = {};
+const mapOfIntervals = {};
 
-async function createIfNotThere(user) {
-  const alreadyInDb = await AuthTableOwner.findOne({
-    where: { user_email: user.user_email },
+// async function createIfNotThere(user) {
+//   const alreadyInDb = await AuthTableOwner.findOne({
+//     where: { user_email: user.user_email },
+//   });
+//   if (alreadyInDb) {
+//     return;
+//   } else {
+//     AuthTableOwner.create(user);
+//   }
+// }
+
+async function checkIfUserExists(userInfo) {
+  const user = await AuthTableOwner.findOne({
+    where: { user_email: userInfo['user_email'] },
   });
-  if (alreadyInDb) {
-    return;
-  } else {
-    AuthTableOwner.create(user);
-  }
+  return user ? true : false;
 }
+
+// exports.createOwner = async (req, res) => {
+//   try {
+//     const email = req.body.email;
+//     const user = {
+//       user_email: email,
+//     };
+//     await createIfNotThere(user);
+//     res.status(204);
+//     res.send('true');
+//   } catch (error) {
+//     // console.log(error);
+//     res.sendStatus(500);
+//   }
+// };
 
 exports.createOwner = async (req, res) => {
   try {
-    const email = req.body.email;
-    const user = {
-      user_email: email,
-    };
-    await createIfNotThere(user);
-    res.status(204);
-    res.send('true');
+    const { email } = req.body;
+    const userInfo = { user_email: email };
+    const userExists = await checkIfUserExists(userInfo);
+    // If the user exists, send back a status code
+    if (userExists) {
+      res.status(403);
+      res.send({ status: 'User Already Exists' });
+    } else {
+      const created = await AuthTableOwner.create(userInfo);
+      res.status(200);
+      res.send({ status: 'User Created', email });
+    }
   } catch (error) {
-    // console.log(error);
-    res.sendStatus(500);
+    res.status(500);
+    res.send({ status: 'Error, something went wrong', error });
   }
 };
+
+// exports.createOwner = async (req, res) => {
+//   try {
+//     const { email } = req.body;
+//   } catch (err) {
+//     res.sendStatus(500);
+//   }
+// };
 
 exports.createParty = async (req, res) => {
   try {
