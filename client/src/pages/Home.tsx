@@ -23,6 +23,7 @@ function Home(): JSX.Element {
         <Logo />
         <SloganWrapper className="slogan">
           <button
+            id='login-btn'
             onClick={() =>
               loginWithPopup({
                 returnTo: 'http://localhost:3000/dashboard',
