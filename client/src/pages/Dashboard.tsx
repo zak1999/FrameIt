@@ -11,6 +11,7 @@ import {
   checkForParty,
   deleteParty,
 } from '../ApiServices';
+import DashboardWrapper from '../components/DashboardWrapper';
 
 function Dashboard(): JSX.Element {
   const navigate = useNavigate();
@@ -73,94 +74,90 @@ function Dashboard(): JSX.Element {
     setPartyId('');
     return;
   };
+  if (loading) return (
+    <DashboardWrapper>
+      <Loading />      
+    </DashboardWrapper>
+  )
 
   return (
-    <div className="App">
-      <div className="dashboardWrapper">
-        <Navbar />
-        {loading ? (
-          <Loading />
-        ) : (
-          <>
-            {!isUp ? (
-              <div className="firstHalfDash">
-                <h2>Our Server is 📉</h2>
+    <DashboardWrapper>
+      {!isUp ? (
+        <div className="firstHalfDash">
+          <h2>Our Server is 📉</h2>
+        </div>
+      ) : (
+        <>
+          <div className="firstHalfDash">
+            {isAuthenticated ? (
+              <div className="hello">
+                {' '}
+                Hello {(user && user.given_name) || ''}!{' '}
               </div>
             ) : (
-              <>
-                <div className="firstHalfDash">
-                  {isAuthenticated ? (
-                    <div className="hello">
-                      {' '}
-                      Hello {(user && user.given_name) || ''}!{' '}
-                    </div>
-                  ) : (
-                    ''
-                  )}
-                  {isAuthenticated ? (
-                    partyId ? (
-                      <div className="dashButtons">
-                        <button className="mainButton" onClick={handleRedirect}>
-                          GO TO UR PARTY
-                        </button>
-                        <button
-                          className={
-                            askConfirm ? 'mainButton invisible' : 'mainButton'
-                          }
-                          onClick={confirm}
-                        >
-                          DELETE CURRENT PARTY
-                        </button>
-                        <div
-                          className={
-                            askConfirm ? 'askConfirm' : 'invisible askConfirm'
-                          }
-                        >
-                          ARE YOU SURE?
-                          <div className="wrapConfirm">
-                            <button
-                              className="confirmYes vibrate"
-                              onClick={handleDelete}
-                            >
-                              YES
-                            </button>
-                            <button
-                              className="confirmNo"
-                              onClick={() => setAskConfirm(false)}
-                            >
-                              NO
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <button onClick={handleCreate} className="logButton">
-                        CREATE A PARTY 📸
-                      </button>
-                    )
-                  ) : (
-                    ''
-                  )}
-                </div>
-                <div className="secondHalfDash"></div>
-                {isAuthenticated ? (
-                  <div className="navButton" onClick={() => logout()}>
-                    <button className="logButton">LOGOUT</button>
-                  </div>
-                ) : (
-                  <div
-                    className="navButton"
-                    onClick={() => loginWithRedirect()}
-                  >
-                    <button className="logButton">LOGIN</button>
-                  </div>
-                )}
-              </>
+              ''
             )}
-          </>
-        )}
-      </div>
-    </div>
+            {isAuthenticated ? (
+              partyId ? (
+                <div className="dashButtons">
+                  <button className="mainButton" onClick={handleRedirect}>
+                    GO TO UR PARTY
+                  </button>
+                  <button
+                    className={
+                      askConfirm ? 'mainButton invisible' : 'mainButton'
+                    }
+                    onClick={confirm}
+                  >
+                    DELETE CURRENT PARTY
+                  </button>
+                  <div
+                    className={
+                      askConfirm ? 'askConfirm' : 'invisible askConfirm'
+                    }
+                  >
+                    ARE YOU SURE?
+                    <div className="wrapConfirm">
+                      <button
+                        className="confirmYes vibrate"
+                        onClick={handleDelete}
+                      >
+                        YES
+                      </button>
+                      <button
+                        className="confirmNo"
+                        onClick={() => setAskConfirm(false)}
+                      >
+                        NO
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <button onClick={handleCreate} className="logButton">
+                  CREATE A PARTY 📸
+                </button>
+              )
+            ) : (
+              ''
+            )}
+          </div>
+          <div className="secondHalfDash"></div>
+          {isAuthenticated ? (
+            <div className="navButton" onClick={() => logout()}>
+              <button className="logButton">LOGOUT</button>
+            </div>
+          ) : (
+            <div
+              className="navButton"
+              onClick={() => loginWithRedirect()}
+            >
+              <button className="logButton">LOGIN</button>
+            </div>
+          )}
+        </>
+      )}
+    </DashboardWrapper>
   );
 }
 
