@@ -33,6 +33,7 @@ describe('Controller Testing', () => {
       const res1 = await request
         .post('/users/owner')
         .send({ email: 'testing@email.com' });
+
       expect(res1.status).toBe(200);
       expect(res1.body).toEqual({
         status: 'User Created',
@@ -108,20 +109,35 @@ describe('Controller Testing', () => {
       const res1 = await request
         .post('/users/party/create')
         .send({ email: mockUser.user_email });
+
+      const user = await AuthTableOwner.findOne({
+        where: { user_email: mockUser['user_email'] },
+      });
+
+      const { party_id } = user;
+      expect(res1.body).toEqual({ status: 'Party Created', party_id });
       expect(res1.status).toBe(200);
 
-      // Making sure that a party was made with a party_id the same as the user
-      const owner = await AuthTableOwner.findOne({
-        where: { user_email: mockUser.user_email },
-      });
-      const party = await Party.findOne({
-        where: { party_id: owner.party_id },
-      });
+      // const party = await Party.findOne({ where: { party_id: party_id } });
 
-      expect(party.party_id).toBe(owner.party_id);
+      // Testing if the user and the partyId already exists
+      const res2 = await request
+        .post('/users/party/create')
+        .send({ email: mockUser.user_email });
+
+      expect(res2.status).toBe(400);
+      expect(res2.body).toEqual({ status: 'Party already exists' });
+
+      await Party.destroy({ where: { party_id: party_id } });
       await AuthTableOwner.destroy({
         where: { user_email: 'user@email.com' },
       });
+
+      const res3 = await request
+        .post('/users/party/create')
+        .send({ email: mockUser.user_email });
+      expect(res3.status).toBe(404);
+      expect(res3.body).toEqual({ status: 'User not found.' });
     });
   });
 
