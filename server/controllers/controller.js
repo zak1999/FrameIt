@@ -10,7 +10,11 @@ async function createIfNotThere(user) {
   const alreadyInDb = await AuthTableOwner.findOne({
     where: { user_email: user.user_email },
   });
-  return alreadyInDb ? true : false;
+  if (alreadyInDb) {
+    return;
+  } else {
+    AuthTableOwner.create(user);
+  }
 }
 
 exports.createOwner = async (req, res) => {
@@ -19,16 +23,11 @@ exports.createOwner = async (req, res) => {
     const user = {
       user_email: email,
     };
-    const exists = await createIfNotThere(user);
-    if (exists) {
-      res.sendStatus(400);
-    } else {
-      await AuthTableOwner.create(user);
-      res.status(204);
-      res.send('true');
-    }
+    await createIfNotThere(user);
+    res.status(204);
+    res.send('true');
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.sendStatus(500);
   }
 };
@@ -36,10 +35,10 @@ exports.createOwner = async (req, res) => {
 exports.createParty = async (req, res) => {
   try {
     const email = req.body.email;
+    const id = generateRandomString(6);
     const user = await AuthTableOwner.findOne({
       where: { user_email: email },
     });
-    // console.log(user);
     if (!user) {
       res.sendStatus(404); // user not found
       return;
@@ -48,7 +47,6 @@ exports.createParty = async (req, res) => {
       res.sendStatus(400); // bad request, user already has a party
       return;
     }
-    const id = generateRandomString(6);
     await AuthTableOwner.update(
       {
         party_id: id,
@@ -57,7 +55,6 @@ exports.createParty = async (req, res) => {
         where: { user_email: email },
       }
     );
-
     const party = {
       party_id: id,
       pics: JSON.stringify([]),
@@ -65,12 +62,12 @@ exports.createParty = async (req, res) => {
     };
     await Party.create(party);
     // here call the function that will set the interval to update this particular room
-    const interval = await this.triggerSocket(party.socket_room_id, id);
+    let interval = await this.triggerSocket(party.socket_room_id, id);
     mapOfIntervals[id] = interval;
     res.status(200);
     res.send(id);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.sendStatus(500);
   }
 };
@@ -130,17 +127,17 @@ exports.insertUrlInDb = async (req, res) => {
     // take variables from body
     const url = req.body.url;
     const partyId = req.body.partyId;
-    console.log('Arrived pic for party' + partyId + ' url: ' + url);
+    // console.log('Arrived pic for party' + partyId + ' url: ' + url);
     // search the party in the db to get the url array of the pics
     const partyObj = await Party.findOne({
       where: { party_id: partyId },
     });
-    console.log('Prev url arr is: ' + partyObj.pics);
+    // console.log('Prev url arr is: ' + partyObj.pics);
     // parse the url string into an actual array
     const picsArr = JSON.parse(partyObj.pics);
     // push the new pic url into that
     picsArr.push(url);
-    console.log('New pics arr is: ' + picsArr);
+    // console.log('New pics arr is: ' + picsArr);
     // update the record in the db
     await Party.update(
       {
@@ -154,6 +151,7 @@ exports.insertUrlInDb = async (req, res) => {
     res.status(200);
     res.send(true);
   } catch (error) {
+    console.log(error);
     res.sendStatus(404);
   }
 };
@@ -161,13 +159,15 @@ exports.insertUrlInDb = async (req, res) => {
 exports.getSocketRoom = async (req, res) => {
   try {
     const partyId = req.params.id;
-    let party = await Party.findOne({
+    const party = await Party.findOne({
       where: { party_id: partyId },
     });
-    res.status(200);
-    res.send(party.socket_room_id);
+
+    // If the party exists, then we have a 200 status, else a 404
+    res.status = 200;
+    res.send({ socket_room_id: party.socket_room_id });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.sendStatus(500);
   }
 };
@@ -215,7 +215,7 @@ exports.startSetIntervals = async () => {
 exports.checkIfPartyExists = async (req, res) => {
   try {
     const id = req.params.id;
-    let partyObj = await Party.findOne({ where: { party_id: id } });
+    const partyObj = await Party.findOne({ where: { party_id: id } });
     if (partyObj) {
       res.status(200);
       res.send({ exists: true });
@@ -224,7 +224,7 @@ exports.checkIfPartyExists = async (req, res) => {
       res.send({ exists: false });
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.sendStatus(500);
   }
 };

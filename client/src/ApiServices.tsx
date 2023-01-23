@@ -134,7 +134,8 @@ export async function getSocketRoomId(id: string | undefined): Promise<string> {
       `${process.env.REACT_APP_BACKEND_URL}/party/socketRoom/${id}`
     );
     // .then((response) => response.text());
-    return await response.text();
+    const { socket_room_id } = await response.json();
+    return socket_room_id;
   } catch (error) {
     return '';
   }
