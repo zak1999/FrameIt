@@ -20,6 +20,7 @@ const sampleData = {
   loginWithPopup: jest.fn(),
   isLoading: false,
 }
+
 jest.mock("@auth0/auth0-react")
 
 describe('Unauthenticated user', ()=>{
@@ -29,18 +30,20 @@ describe('Unauthenticated user', ()=>{
       ...sampleData
     })
   })
-  test('If user is unauthenticated from auth0, user remains on <Home />', async () => {
+  it('If user is unauthenticated from auth0, user remains on <Home />.', async () => {
     const { container } = render(
       <RouterProvider router={router}>
         <Home/>
-      </RouterProvider>);
+      </RouterProvider>
+      );
     expect(container.getElementsByClassName('logButton').length).toBe(1)
   });
-  test('On login click, auth0 useloginWithPopup function ', async () => {
+  it('When user clicks log in button, auth0 useloginWithPopup function is invoked.', async () => {
   const { container } = render(
     <RouterProvider router={router}>
       <Home/>
-    </RouterProvider>);
+    </RouterProvider>
+    );
     const { loginWithPopup } = useAuth0();
     const logInBtn = container.getElementsByClassName('logButton')[0]
     userEvent.click(logInBtn);
