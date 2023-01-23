@@ -4,6 +4,7 @@ import { io } from 'socket.io-client';
 import { generateRandomString, getSocketRoomId } from '../ApiServices';
 import '../styles/animations.css';
 import '../styles/Dashboard.css';
+import LogButton from './LogButton';
 
 type PhotosGridProps = {
   id: string;
@@ -82,12 +83,12 @@ function PhotosGrid({ id }: PhotosGridProps) {
         onClick={closeModal}
       >
         <img src={modalUrl} className="innerModal"></img>
-        <button
-          className="logButton zidx"
+        <LogButton
+          className="zidx"
           onClick={() => downloadImage(modalUrl)}
         >
           DOWNLOAD ⬇️
-        </button>
+        </LogButton>
       </div>
 
       <div className={loading ? 'loaderWrap' : 'invisible'}>

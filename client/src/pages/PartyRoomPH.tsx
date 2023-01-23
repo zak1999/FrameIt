@@ -12,6 +12,8 @@ import { compress, downloadFile } from 'image-conversion';
 import '../styles/Dashboard.css';
 import Navbar from '../components/Navbar';
 import PhotosGrid from '../components/PhotosGrid';
+import LogButton from '../components/LogButton';
+
 
 // TODO: ADD PASSWORD TO PRIVATE ROOMS
 
@@ -128,12 +130,12 @@ function PartyRoomPH(): JSX.Element {
               />
               {fileUploaded ? (
                 <>
-                  <button className="logButton" type="submit">
+                  <LogButton className="logButton" type="submit">
                     SEND
-                  </button>
+                  </LogButton>
                 </>
               ) : (
-                <button className="logButton">Placeholder</button>
+                <LogButton className="logButton">Placeholder</LogButton>
               )}
             </form>
           </div>
@@ -157,9 +159,9 @@ function PartyRoomPH(): JSX.Element {
                   <div className="imagePreview">
                     <img className="imagePreviewActually" src={something}></img>
                   </div>
-                  <button className="logButton" onClick={downloadIt}>
+                  <LogButton onClick={downloadIt}>
                     DOWNLOAD ⬇️
-                  </button>
+                  </LogButton>
                 </>
               ) : (
                 <PhotosGrid id={id || ''} />

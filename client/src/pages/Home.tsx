@@ -8,6 +8,7 @@ import AppInfo from '../components/AppInfo';
 import TerrenceWrapper from '../components/TerrenceWrapper';
 import Wrapper from '../components/Wrapper';
 import SloganWrapper from '../components/SloganWrapper';
+import LogButton from '../components/LogButton';
 
 function Home(): JSX.Element {
   const { isAuthenticated, loginWithPopup } = useAuth0();
@@ -22,17 +23,16 @@ function Home(): JSX.Element {
       <TerrenceWrapper>
         <Logo />
         <SloganWrapper className="slogan">
-          <button
+          <LogButton
             id='login-btn'
             onClick={() =>
               loginWithPopup({
                 returnTo: 'http://localhost:3000/dashboard',
               })
             }
-            className="logButton"
           >
             LOGIN
-          </button>
+          </LogButton>
         </SloganWrapper>
       </TerrenceWrapper>
       <AppInfo />

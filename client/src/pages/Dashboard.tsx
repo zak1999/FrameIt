@@ -11,7 +11,10 @@ import {
   checkForParty,
   deleteParty,
 } from '../ApiServices';
+
 import DashboardWrapper from '../components/DashboardWrapper';
+import LogButton from '../components/LogButton';
+
 
 function Dashboard(): JSX.Element {
   const navigate = useNavigate();
@@ -82,11 +85,12 @@ function Dashboard(): JSX.Element {
 
   return (
     <DashboardWrapper>
-      {!isUp ? (
+      {!isUp 
+      ? (
         <div className="firstHalfDash">
           <h2>Our Server is 📉</h2>
-        </div>
-      ) : (
+        </div>) 
+      : (
         <>
           <div className="firstHalfDash">
             {isAuthenticated ? (
@@ -134,27 +138,20 @@ function Dashboard(): JSX.Element {
                   </div>
                 </div>
               ) : (
-                <button onClick={handleCreate} className="logButton">
+                <LogButton onClick={(e) => handleCreate(e)}>
                   CREATE A PARTY 📸
-                </button>
+                </LogButton>
               )
             ) : (
               ''
             )}
           </div>
-          <div className="secondHalfDash"></div>
-          {isAuthenticated ? (
-            <div className="navButton" onClick={() => logout()}>
-              <button className="logButton">LOGOUT</button>
-            </div>
-          ) : (
-            <div
-              className="navButton"
-              onClick={() => loginWithRedirect()}
-            >
-              <button className="logButton">LOGIN</button>
-            </div>
-          )}
+          <div className="navButton">
+            {isAuthenticated ? 
+            <LogButton onClick={() => logout()}>LOGOUT</LogButton> 
+            :<LogButton onClick={() => loginWithRedirect()}>LOGIN</LogButton>
+            }
+          </div>
         </>
       )}
     </DashboardWrapper>
