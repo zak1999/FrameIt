@@ -59,7 +59,7 @@ function PartyRoomPH(): JSX.Element {
         await sendUrlToDb(photoUrl, id || '');
         // setSomething(false);
         setSomething(photoUrl);
-        console.log(something);
+        setPhotoTaken(null);
         setFileUploaded(false);
         setLoading(false);
       } else {
@@ -76,8 +76,10 @@ function PartyRoomPH(): JSX.Element {
     // Take the input from the photo input
     // const input = document.getElementById('foto');
     const photos = fotoRef.current?.files;
+    console.log(photos);
     if (photos) {
       const photo = photos[0];
+      console.log('Hello');
       const compressed = await compress(photo, 0.4);
       setFileUploaded(true);
 
