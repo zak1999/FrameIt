@@ -1,4 +1,4 @@
-import { render, screen, waitFor, container, rerender,cleanup } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useAuth0 } from '@auth0/auth0-react';
 import { RouterProvider } from 'react-router-dom';
@@ -23,9 +23,9 @@ const sampleData = {
 
 jest.mock("@auth0/auth0-react")
 
-describe('Unauthenticated user', ()=>{
+describe('<Home /> component tests for unauthenticated user', ()=>{
   beforeEach(() => {
-    useAuth0.mockReturnValue({//default
+    useAuth0.mockReturnValue({
       isAuthenticated: false,
       ...sampleData
     })
@@ -45,7 +45,7 @@ describe('Unauthenticated user', ()=>{
     </RouterProvider>
     );
     const { loginWithPopup } = useAuth0();
-    const logInBtn = container.getElementsByClassName('logButton')[0]
+    const logInBtn = container.querySelector('#login-btn');
     userEvent.click(logInBtn);
     expect(loginWithPopup).toHaveBeenCalled()
   });

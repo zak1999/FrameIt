@@ -21,13 +21,14 @@ const sampleData = {
 }
 
 jest.mock("@auth0/auth0-react")
-  describe('Authenticated user', () => {
+  describe('<Home /> component tests for authenticated user', () => {
     beforeEach(() => {
       useAuth0.mockReturnValue({
         isAuthenticated: true,
-        ...sampleData})
+        ...sampleData
       })
-    test('On successful authentication from auth0, <Dashboard /> is rendered', async () => {
+    })
+    it('On successful authentication from auth0, <Dashboard /> is rendered', async () => {
       const { container } = render(
         <RouterProvider router={router}>
           <Home/>
