@@ -14,7 +14,7 @@ import {
 
 import DashboardWrapper from '../components/DashboardWrapper';
 import LogButton from '../components/LogButton';
-
+import ConfirmDelete from '../components/ConfirmDelete';
 
 function Dashboard(): JSX.Element {
   const navigate = useNavigate();
@@ -121,20 +121,7 @@ function Dashboard(): JSX.Element {
                     }
                   >
                     ARE YOU SURE?
-                    <div className="wrapConfirm">
-                      <button
-                        className="confirmYes vibrate"
-                        onClick={handleDelete}
-                      >
-                        YES
-                      </button>
-                      <button
-                        className="confirmNo"
-                        onClick={() => setAskConfirm(false)}
-                      >
-                        NO
-                      </button>
-                    </div>
+                    <ConfirmDelete functionIfNo={setAskConfirm} functionIfYes={handleDelete}/>
                   </div>
                 </div>
               ) : (
