@@ -82,11 +82,13 @@ function Dashboard(): JSX.Element {
           <Loading />
         ) : (
           <>
-            {!isUp ? (
+            {!isUp 
+            ? (
               <div className="firstHalfDash">
                 <h2>Our Server is 📉</h2>
               </div>
-            ) : (
+            ) 
+            : (
               <>
                 <div className="firstHalfDash">
                   {isAuthenticated ? (
@@ -100,7 +102,7 @@ function Dashboard(): JSX.Element {
                   {isAuthenticated ? (
                     partyId ? (
                       <div className="dashButtons">
-                        <button className="mainButton" onClick={handleRedirect}>
+                        <button className="mainButton" id="go-to-party-btn" onClick={handleRedirect}>
                           GO TO UR PARTY
                         </button>
                         <button

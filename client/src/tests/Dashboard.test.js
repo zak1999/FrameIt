@@ -5,7 +5,8 @@ import { router } from '../router';
 import { createOwner } from '../ApiServices';
 import { useAuth0 } from '@auth0/auth0-react';
 import Dashboard from '../pages/Dashboard';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { act } from 'react-dom/test-utils';
 
 const sampleData = {
   user:{
@@ -24,10 +25,10 @@ const sampleData = {
 
 jest.mock("@auth0/auth0-react")
 
-jest.mock('react', ()=>({
-  ...jest.requireActual('react'),
-  useState: jest.fn()
-}))
+// jest.mock('react', ()=>({
+//   ...jest.requireActual('react'),
+//   useState: jest.fn()
+// }))
 jest.mock('../ApiServices', ()=>({
   ...(jest.requireActual('../ApiServices')),
   createOwner: jest.fn() 
@@ -39,9 +40,9 @@ describe('<Dashboard /> component tests: ', () => {
       isAuthenticated: true,
       ...sampleData
     })
-    useState.mockImplementation(jest.requireActual('react').useState);
+    // useState.mockImplementation(jest.requireActual('react').useState);
   })
-  it('createOwner() function runs on the load of the page',async () => {
+  it('createOwner() function runs on the load of the page', async () => {
     const { container } = render(
       <RouterProvider router={router}>
         <Dashboard/>
@@ -49,17 +50,32 @@ describe('<Dashboard /> component tests: ', () => {
       )
     expect(createOwner).toHaveBeenCalled()
   })
-  
-  // if user has a party, 'got to party' btn appears
-  
-  it('createOwner() function runs on the load of the page',async () => {
-    // useState.mockImplementation(()=>[true, setPartyId])
-    const x = render(
+    
+  it("If user has a party, 'Go to party' button is visible", async () => {
+    const setPartyId = jest.fn()
+    const setLoading = jest.fn()
+    const setIsUp = jest.fn()
+
+
+    
+    act(()=>{
+      // jest.spyOn(React, 'useState')
+      // .mockImplementation((init)=>[init,setIsUp])
+      jest.spyOn(React, 'useState')
+      .mockImplementation(()=>[false, setLoading])
+      jest.spyOn(React, 'useState')
+      .mockImplementationOnce(()=>[true, setPartyId])
+    })
+
+    const { container } = render(
       <RouterProvider router={router}>
         <Dashboard/>
       </RouterProvider>
-      )
-    expect(createOwner).toHaveBeenCalled()
+    )
+
+    // expect(container.querySelectorAll('#go-to-party-btn').length).toBe(1)
+    expect(container.getElementsByClassName('firstHalfDash').length).toBe(1)
+
     })
   
   
