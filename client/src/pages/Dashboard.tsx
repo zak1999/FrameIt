@@ -2,7 +2,6 @@
 import { useEffect, useState, MouseEvent, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import Navbar from '../components/Navbar';
 import '../styles/Dashboard.css';
 import Loading from '../components/Loading';
 import {
@@ -14,7 +13,7 @@ import {
 
 import DashboardWrapper from '../components/DashboardWrapper';
 import LogButton from '../components/LogButton';
-import ConfirmDelete from '../components/ConfirmDelete';
+import DashButtons from '../components/DashButtons';
 
 function Dashboard(): JSX.Element {
   const navigate = useNavigate();
@@ -85,52 +84,28 @@ function Dashboard(): JSX.Element {
 
   return (
     <DashboardWrapper>
-      {!isUp 
-      ? (
+      {!isUp ? (
         <div className="firstHalfDash">
           <h2>Our Server is 📉</h2>
-        </div>) 
-      : (
+        </div>
+        ) : ( 
         <>
           <div className="firstHalfDash">
-            {isAuthenticated ? (
+            {isAuthenticated && (
+              <>
               <div className="hello">
                 {' '}
                 Hello {(user && user.given_name) || ''}!{' '}
               </div>
-            ) : (
-              ''
-            )}
-            {isAuthenticated ? (
-              partyId ? (
-                <div className="dashButtons">
-                  <button className="mainButton" onClick={handleRedirect}>
-                    GO TO UR PARTY
-                  </button>
-                  <button
-                    className={
-                      askConfirm ? 'mainButton invisible' : 'mainButton'
-                    }
-                    onClick={confirm}
-                  >
-                    DELETE CURRENT PARTY
-                  </button>
-                  <div
-                    className={
-                      askConfirm ? 'askConfirm' : 'invisible askConfirm'
-                    }
-                  >
-                    ARE YOU SURE?
-                    <ConfirmDelete functionIfNo={setAskConfirm} functionIfYes={handleDelete}/>
-                  </div>
-                </div>
+              {partyId ? (
+                <DashButtons handleRedirect={handleRedirect} setAskConfirm={setAskConfirm}
+                handleDelete={handleDelete} confirm={confirm} askConfirm={askConfirm} />
               ) : (
                 <LogButton onClick={(e) => handleCreate(e)}>
                   CREATE A PARTY 📸
                 </LogButton>
-              )
-            ) : (
-              ''
+              )}
+              </>
             )}
           </div>
           <div className="navButton">
