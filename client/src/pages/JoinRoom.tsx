@@ -8,7 +8,7 @@ import '../styles/Dashboard.css';
 import Wrapper from '../components/Wrapper';
 import TerrenceWrapper from '../components/TerrenceWrapper';
 import SloganWrapper from '../components/SloganWrapper';
-
+import LogButton from '../components/LogButton';
 // reachable at /party/:id/ph
 function JoinRoom(): JSX.Element {
   const { id } = useParams();
@@ -22,9 +22,9 @@ function JoinRoom(): JSX.Element {
       <TerrenceWrapper>
         <Logo />
         <SloganWrapper className="welcome">
-          <button onClick={() => handleRedirect()} className="logButton">
+          <LogButton onClick={() => handleRedirect()}>
             Join As Guest
-          </button>
+          </LogButton>
         </SloganWrapper>
       </TerrenceWrapper>
       <AppInfo />

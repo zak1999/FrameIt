@@ -12,6 +12,10 @@ import { compress, downloadFile } from 'image-conversion';
 import '../styles/Dashboard.css';
 import Navbar from '../components/Navbar';
 import PhotosGrid from '../components/PhotosGrid';
+import LogButton from '../components/LogButton';
+import Dashboard from './Dashboard';
+import DashboardWrapper from '../components/DashboardWrapper';
+
 
 // TODO: ADD PASSWORD TO PRIVATE ROOMS
 
@@ -96,81 +100,79 @@ function PartyRoomPH(): JSX.Element {
     navigate(`/party/${id}`);
   }
   return (
-    <div className="dashboardWrapper">
-      <Navbar />
-
-      {!roomExists ? (
-        <h1>Wrong Room :C</h1>
-      ) : (
-        <>
-          <div className="firstHalf">
-            {' '}
-            ROOM #{id}
-            {isAuthenticated ? (
-              <button onClick={goBack} className="mainButton">
-                Back 2 the Lobby
-              </button>
-            ) : (
-              ''
-            )}
-            <form id="formSend" onSubmit={sendIt}>
-              <div className="fotoWrap">
-                <label htmlFor="foto" className="mainButton">
-                  {fileUploaded ? 'Take another One 📸' : 'TAKE PHOTO 📸'}
-                </label>
-              </div>
-              <input
-                ref={fotoRef}
-                id="foto"
-                type="file"
-                name="image"
-                capture="environment"
-                accept="image/*"
-                onChange={handleChange}
-              />
-              {fileUploaded ? (
-                <>
-                  <button className="logButton" type="submit">
-                    SEND
-                  </button>
-                </>
-              ) : (
-                <button className="logButton">Placeholder</button>
-              )}
-            </form>
-          </div>
-
-          {loading ? (
-            <div className="secondHalf">
-              <ProgressBar
-                height="90"
-                width="90"
-                ariaLabel="progress-bar-loading"
-                wrapperStyle={{}}
-                wrapperClass="progress-bar-wrapper"
-                borderColor="#8139d1"
-                barColor="#e5b9ed"
-              />
-            </div>
+  <DashboardWrapper>
+    {!roomExists ? (
+      <h1>Wrong Room :C</h1>
+    ) : (
+      <>
+        <div className="firstHalf">
+          {' '}
+          ROOM #{id}
+          {isAuthenticated ? (
+            <button onClick={goBack} className="mainButton">
+              Back 2 the Lobby
+            </button>
           ) : (
-            <div className="secondHalf">
-              {fileUploaded ? (
-                <>
-                  <div className="imagePreview">
-                    <img className="imagePreviewActually" src={something}></img>
-                  </div>
-                  <button className="logButton" onClick={downloadIt}>
-                    DOWNLOAD ⬇️
-                  </button>
-                </>
-              ) : (
-                <PhotosGrid id={id || ''} />
-              )}
-            </div>
+            ''
           )}
-        </>
-      )}
-    </div>
+          <form id="formSend" onSubmit={sendIt}>
+            <div className="fotoWrap">
+              <label htmlFor="foto" className="mainButton">
+                {fileUploaded ? 'Take another One 📸' : 'TAKE PHOTO 📸'}
+              </label>
+            </div>
+            <input
+              ref={fotoRef}
+              id="foto"
+              type="file"
+              name="image"
+              capture="environment"
+              accept="image/*"
+              onChange={handleChange}
+            />
+            {fileUploaded ? (
+              <>
+                <LogButton className="logButton" type="submit">
+                  SEND
+                </LogButton>
+              </>
+            ) : (
+              <LogButton className="logButton">Placeholder</LogButton>
+            )}
+          </form>
+        </div>
+
+        {loading ? (
+          <div className="secondHalf">
+            <ProgressBar
+              height="90"
+              width="90"
+              ariaLabel="progress-bar-loading"
+              wrapperStyle={{}}
+              wrapperClass="progress-bar-wrapper"
+              borderColor="#8139d1"
+              barColor="#e5b9ed"
+            />
+          </div>
+        ) : (
+          <div className="secondHalf">
+            {fileUploaded ? (
+              <>
+                <div className="imagePreview">
+                  <img className="imagePreviewActually" src={something}></img>
+                </div>
+                <LogButton onClick={downloadIt}>
+                  DOWNLOAD ⬇️
+                </LogButton>
+              </>
+            ) : (
+              <PhotosGrid id={id || ''} />
+            )}
+          </div>
+        )}
+      </>
+    )}
+  </DashboardWrapper>
   );
 }
 
