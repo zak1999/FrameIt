@@ -237,22 +237,33 @@ describe('Controller Testing', () => {
       const user = await AuthTableOwner.findOne({
         where: { user_email: mockUser.user_email },
       });
-      // console.log(user.party_id);
 
       const { party_id } = user;
 
-      const res = await request
+      // Bad request, party does not exist
+      const res1 = await request
+        .post('/party/upload')
+        .send({ url: 'testing_url', partyId: 'wrong_id' });
+      expect(res1.status).toBe(404);
+      expect(res1.body).toEqual({
+        status: 'Party does not exist.',
+        completed: false,
+      });
+
+      const res2 = await request
         .post('/party/upload')
         .send({ url: 'testing_url', partyId: party_id });
-
-      // console.log(res);
 
       const updatedParty = await Party.findOne({
         where: { party_id: party_id },
       });
       // console.log(updatedParty.pics);
 
-      expect(res.status).toBe(200);
+      expect(res2.status).toBe(200);
+      expect(res2.body).toEqual({
+        status: 'Successfully sent to database.',
+        completed: true,
+      });
       expect(updatedParty.pics).toBe('["testing_url"]');
 
       // Clear the AuthTableOwner and Party entries.
