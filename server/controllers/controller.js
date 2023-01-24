@@ -4,71 +4,138 @@ const { generateRandomString, ensureExists } = require('../helpers/helpers');
 const path = require('path');
 
 // obj that will map the intervals of the parties. -> mapOfIntervals = { partyId: interval }
-let mapOfIntervals = {};
+const mapOfIntervals = {};
 
-async function createIfNotThere(user) {
-  const alreadyInDb = await AuthTableOwner.findOne({
-    where: { user_email: user.user_email },
+// async function createIfNotThere(user) {
+//   const alreadyInDb = await AuthTableOwner.findOne({
+//     where: { user_email: user.user_email },
+//   });
+//   if (alreadyInDb) {
+//     return;
+//   } else {
+//     AuthTableOwner.create(user);
+//   }
+// }
+
+async function checkIfUserExists(userInfo) {
+  const user = await AuthTableOwner.findOne({
+    where: { user_email: userInfo['user_email'] },
   });
-  if (alreadyInDb) {
-    return;
-  } else {
-    AuthTableOwner.create(user);
-  }
+  return user ? true : false;
 }
+
+// exports.createOwner = async (req, res) => {
+//   try {
+//     const email = req.body.email;
+//     const user = {
+//       user_email: email,
+//     };
+//     await createIfNotThere(user);
+//     res.status(204);
+//     res.send('true');
+//   } catch (error) {
+//     // console.log(error);
+//     res.sendStatus(500);
+//   }
+// };
 
 exports.createOwner = async (req, res) => {
   try {
-    const email = req.body.email;
-    const user = {
-      user_email: email,
-    };
-    await createIfNotThere(user);
-    res.status(204);
-    res.send('true');
+    const { email } = req.body;
+    const userInfo = { user_email: email };
+    const userExists = await checkIfUserExists(userInfo);
+    // If the user exists, send back a status code
+    if (userExists) {
+      res.status(403);
+      res.send({ status: 'User Already Exists' });
+    } else {
+      const created = await AuthTableOwner.create(userInfo);
+      res.status(200);
+      res.send({ status: 'User Created', email });
+    }
   } catch (error) {
-    // console.log(error);
-    res.sendStatus(500);
+    res.status(500);
+    res.send({ status: 'Error, something went wrong', error });
   }
 };
 
+// exports.createParty = async (req, res) => {
+//   try {
+//     const email = req.body.email;
+//     const id = generateRandomString(6);
+//     const user = await AuthTableOwner.findOne({
+//       where: { user_email: email },
+//     });
+//     if (!user) {
+//       res.sendStatus(404); // user not found
+//       return;
+//     }
+//     if (user.party_id) {
+//       res.sendStatus(400); // bad request, user already has a party
+//       return;
+//     }
+//     await AuthTableOwner.update(
+//       {
+//         party_id: id,
+//       },
+//       {
+//         where: { user_email: email },
+//       }
+//     );
+//     const party = {
+//       party_id: id,
+//       pics: JSON.stringify([]),
+//       socket_room_id: generateRandomString(12),
+//     };
+//     await Party.create(party);
+//     // here call the function that will set the interval to update this particular room
+//     let interval = await this.triggerSocket(party.socket_room_id, id);
+//     mapOfIntervals[id] = interval;
+//     res.status(200);
+//     res.send(id);
+//   } catch (error) {
+//     // console.log(error);
+//     res.sendStatus(500);
+//   }
+// };
+
 exports.createParty = async (req, res) => {
   try {
-    const email = req.body.email;
-    const id = generateRandomString(6);
-    const user = await AuthTableOwner.findOne({
-      where: { user_email: email },
-    });
+    const { email } = req.body;
+    const partyId = generateRandomString(6);
+    const user = await AuthTableOwner.findOne({ where: { user_email: email } });
+
+    // If there is no user, then they cannot create a party.
     if (!user) {
-      res.sendStatus(404); // user not found
-      return;
+      res.status(404);
+      res.send({ status: 'User not found.' });
+    } else if (user && user['party_id']) {
+      res.status(400);
+      res.send({ status: 'Party already exists' });
+    } else {
+      // Else, if the user exists and they don't have a partyId then update it.
+      await AuthTableOwner.update(
+        { party_id: partyId },
+        { where: { user_email: email } }
+      );
+      const party = {
+        party_id: partyId,
+        pics: JSON.stringify([]),
+        socket_room_id: generateRandomString(12),
+      };
+      // Create the new party to be returned to the user
+      const newParty = await Party.create(party);
+      const interval = await this.triggerSocket(
+        newParty['socket_room_id'],
+        partyId
+      );
+      mapOfIntervals[partyId] = interval;
+      res.status(200);
+      res.send({ status: 'Party Created', party_id: partyId });
     }
-    if (user.party_id) {
-      res.sendStatus(400); // bad request, user already has a party
-      return;
-    }
-    await AuthTableOwner.update(
-      {
-        party_id: id,
-      },
-      {
-        where: { user_email: email },
-      }
-    );
-    const party = {
-      party_id: id,
-      pics: JSON.stringify([]),
-      socket_room_id: generateRandomString(12),
-    };
-    await Party.create(party);
-    // here call the function that will set the interval to update this particular room
-    let interval = await this.triggerSocket(party.socket_room_id, id);
-    mapOfIntervals[id] = interval;
-    res.status(200);
-    res.send(id);
   } catch (error) {
-    // console.log(error);
-    res.sendStatus(500);
+    res.status(500);
+    res.send({ status: 'Something went wrong. Party not created.' });
   }
 };
 
@@ -92,6 +159,14 @@ exports.checkIfUserHasParty = async (req, res) => {
     res.sendStatus(404);
   }
 };
+
+// exports.checkIfUserHasParty = async (req, res) => {
+//   try {
+//   } catch (error) {
+//     res.status(500);
+//     res.send({ status: 'Something went wrong.' });
+//   }
+// };
 
 exports.deleteParty = async (req, res) => {
   try {

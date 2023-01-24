@@ -10,14 +10,14 @@ const server = http.createServer(app);
 const socketIo = require('socket.io');
 
 /* global io */
+var whitelist = ['https://frame-it.vercel.app', 'http://localhost:3000'];
 global.io = socketIo(server, {
   cors: {
-    origin: ['http://localhost:3000', 'https://frame-it.vercel.app'],
+    origin: whitelist,
   },
   methods: ['GET', 'POST', 'DELETE'],
 }); //in case server and client run on different urls
 
-var whitelist = ['https://frame-it.vercel.app', 'http://localhost:3000'];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -36,6 +36,10 @@ app.use(
     abortOnLimit: true,
   })
 );
+app.use((req, _, next) => {
+  console.log(req.headers.origin);
+  next();
+});
 app.use(router);
 
 io.on('connection', (socket) => {

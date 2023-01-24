@@ -26,7 +26,7 @@ export async function createOwner(userEmail: string): Promise<boolean> {
         body: JSON.stringify(data),
       }
     );
-    return response.status === 204 ? true : false;
+    return response.status === 200 ? true : false;
   } catch (error) {
     console.log(error);
     return false;
@@ -35,9 +35,7 @@ export async function createOwner(userEmail: string): Promise<boolean> {
 
 // ✅
 export async function createParty(email: string): Promise<string> {
-  const data = {
-    email: email,
-  };
+  const data = { email };
   const response = await fetch(
     `${process.env.REACT_APP_BACKEND_URL}/users/party/create`,
     {
@@ -48,7 +46,9 @@ export async function createParty(email: string): Promise<string> {
       body: JSON.stringify(data),
     }
   );
-  return await response.text();
+  const res = await response.json();
+  const { party_id } = res;
+  return party_id;
 }
 
 export async function checkForParty(email: string): Promise<boolean | string> {
