@@ -1,5 +1,5 @@
-const AuthTableOwner = require('../models/authTableOwner') 
-const Party = require('../models/party')
+const AuthTableOwner = require('../models/authTableOwner');
+const Party = require('../models/party');
 const { generateRandomString, ensureExists } = require('../helpers/helpers');
 const path = require('path');
 
@@ -27,7 +27,7 @@ exports.createOwner = async (req, res) => {
     res.status(204);
     res.send('true');
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.sendStatus(500);
   }
 };
@@ -67,7 +67,7 @@ exports.createParty = async (req, res) => {
     res.status(200);
     res.send(id);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.sendStatus(500);
   }
 };
@@ -127,17 +127,17 @@ exports.insertUrlInDb = async (req, res) => {
     // take variables from body
     const url = req.body.url;
     const partyId = req.body.partyId;
-    console.log('Arrived pic for party' + partyId + ' url: ' + url);
+    // console.log('Arrived pic for party' + partyId + ' url: ' + url);
     // search the party in the db to get the url array of the pics
     const partyObj = await Party.findOne({
       where: { party_id: partyId },
     });
-    console.log('Prev url arr is: ' + partyObj.pics);
+    // console.log('Prev url arr is: ' + partyObj.pics);
     // parse the url string into an actual array
     const picsArr = JSON.parse(partyObj.pics);
     // push the new pic url into that
     picsArr.push(url);
-    console.log('New pics arr is: ' + picsArr);
+    // console.log('New pics arr is: ' + picsArr);
     // update the record in the db
     await Party.update(
       {
@@ -151,6 +151,7 @@ exports.insertUrlInDb = async (req, res) => {
     res.status(200);
     res.send(true);
   } catch (error) {
+    console.log(error);
     res.sendStatus(404);
   }
 };
@@ -158,13 +159,15 @@ exports.insertUrlInDb = async (req, res) => {
 exports.getSocketRoom = async (req, res) => {
   try {
     const partyId = req.params.id;
-    let party = await Party.findOne({
+    const party = await Party.findOne({
       where: { party_id: partyId },
     });
-    res.status(200);
-    res.send(party.socket_room_id);
+
+    // If the party exists, then we have a 200 status, else a 404
+    res.status = 200;
+    res.send({ socket_room_id: party.socket_room_id });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.sendStatus(500);
   }
 };
@@ -177,7 +180,7 @@ exports.socketIoUpdateParty = async (socketRoom, id) => {
     let picsArr = JSON.parse(partyObj.pics);
     io.to(socketRoom).emit('pics', picsArr);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
   return;
 };
@@ -212,7 +215,7 @@ exports.startSetIntervals = async () => {
 exports.checkIfPartyExists = async (req, res) => {
   try {
     const id = req.params.id;
-    let partyObj = await Party.findOne({ where: { party_id: id } });
+    const partyObj = await Party.findOne({ where: { party_id: id } });
     if (partyObj) {
       res.status(200);
       res.send({ exists: true });
@@ -221,7 +224,7 @@ exports.checkIfPartyExists = async (req, res) => {
       res.send({ exists: false });
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.sendStatus(500);
   }
 };
