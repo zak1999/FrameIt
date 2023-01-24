@@ -55,18 +55,8 @@ export async function checkForParty(email: string): Promise<boolean | string> {
   const response = await fetch(
     `${process.env.REACT_APP_BACKEND_URL}/users/info/party/${email}`
   );
-  const responseText = await response.text();
-  return response.status === 200 && responseText ? responseText : false;
-
-  //   .then((response) => {
-  //     if (response.status === 200) return response.text();
-  //     else return false;
-  //   })
-  //   .then((response) => {
-  //     if (response) return response;
-  //     return false;
-  //   });
-  // return response;
+  const res = await response.json();
+  return res['party_id'];
 }
 
 export async function deleteParty(id: string): Promise<string> {
@@ -77,11 +67,8 @@ export async function deleteParty(id: string): Promise<string> {
     },
     body: JSON.stringify({ id }),
   });
-  return await response.text();
-
-  //   .then((response) => response.text())
-  //   .then((response) => response);
-  // return response;
+  const res = await response.json();
+  return res['completed'];
 }
 
 export async function sendImage(imageData: Blob): Promise<string> {
@@ -98,12 +85,6 @@ export async function sendImage(imageData: Blob): Promise<string> {
   );
   const result = await response.json();
   return result['secure_url'];
-
-  // .then(async (res) => {
-  //   const result = await res.json();
-  //   return result['secure_url'];
-  // });
-  // return response;
 }
 
 export async function sendUrlToDb(url: string, id: string): Promise<string> {
@@ -121,11 +102,8 @@ export async function sendUrlToDb(url: string, id: string): Promise<string> {
       body: JSON.stringify(data),
     }
   );
-  return await response.text();
-
-  //   .then((response) => response.text())
-  //   .then((response) => response);
-  // return response;
+  const res = await response.json();
+  return res['completed'];
 }
 
 export async function getSocketRoomId(id: string | undefined): Promise<string> {

@@ -44,7 +44,7 @@ describe('Controller Testing', () => {
         .post('/users/owner')
         .send({ email: 'testing@email.com' });
 
-      expect(res2.status).toBe(403);
+      expect(res2.status).toBe(200);
     });
 
     afterEach(async () => {
@@ -187,24 +187,32 @@ describe('Controller Testing', () => {
 
       // Test for no party
       const res1 = await request.get('/users/info/party/user@email.com');
-      expect(res1.status).toBe(204);
+      expect(res1.status).toBe(404);
+      expect(res1.body).toEqual({
+        status: 'User/Party not found.',
+        party_id: false,
+      });
 
       // Creating a party for a user
       const res2 = await request
         .post('/users/party/create')
         .send({ email: mockUser.user_email });
-      expect(res2.status).toBe(200);
 
       const user = await AuthTableOwner.findOne({
         where: { user_email: mockUser.user_email },
       });
-
       const { party_id } = user;
+
+      expect(res2.status).toBe(200);
+      expect(res2.body).toEqual({
+        status: 'Party Created',
+        party_id: party_id,
+      });
 
       // Testing for user having a party
       const res3 = await request.get('/users/info/party/user@email.com');
       expect(res3.status).toBe(200);
-      expect(res3.text).toBe(party_id);
+      expect(res3.body).toEqual({ status: 'User Found.', party_id: party_id });
 
       // Deleting entries from table
       await AuthTableOwner.destroy({

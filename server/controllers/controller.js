@@ -6,38 +6,12 @@ const path = require('path');
 // obj that will map the intervals of the parties. -> mapOfIntervals = { partyId: interval }
 const mapOfIntervals = {};
 
-// async function createIfNotThere(user) {
-//   const alreadyInDb = await AuthTableOwner.findOne({
-//     where: { user_email: user.user_email },
-//   });
-//   if (alreadyInDb) {
-//     return;
-//   } else {
-//     AuthTableOwner.create(user);
-//   }
-// }
-
 async function checkIfUserExists(userInfo) {
   const user = await AuthTableOwner.findOne({
     where: { user_email: userInfo['user_email'] },
   });
   return user ? true : false;
 }
-
-// exports.createOwner = async (req, res) => {
-//   try {
-//     const email = req.body.email;
-//     const user = {
-//       user_email: email,
-//     };
-//     await createIfNotThere(user);
-//     res.status(204);
-//     res.send('true');
-//   } catch (error) {
-//     // console.log(error);
-//     res.sendStatus(500);
-//   }
-// };
 
 exports.createOwner = async (req, res) => {
   try {
@@ -58,46 +32,6 @@ exports.createOwner = async (req, res) => {
     res.send({ status: 'Error, something went wrong', error });
   }
 };
-
-// exports.createParty = async (req, res) => {
-//   try {
-//     const email = req.body.email;
-//     const id = generateRandomString(6);
-//     const user = await AuthTableOwner.findOne({
-//       where: { user_email: email },
-//     });
-//     if (!user) {
-//       res.sendStatus(404); // user not found
-//       return;
-//     }
-//     if (user.party_id) {
-//       res.sendStatus(400); // bad request, user already has a party
-//       return;
-//     }
-//     await AuthTableOwner.update(
-//       {
-//         party_id: id,
-//       },
-//       {
-//         where: { user_email: email },
-//       }
-//     );
-//     const party = {
-//       party_id: id,
-//       pics: JSON.stringify([]),
-//       socket_room_id: generateRandomString(12),
-//     };
-//     await Party.create(party);
-//     // here call the function that will set the interval to update this particular room
-//     let interval = await this.triggerSocket(party.socket_room_id, id);
-//     mapOfIntervals[id] = interval;
-//     res.status(200);
-//     res.send(id);
-//   } catch (error) {
-//     // console.log(error);
-//     res.sendStatus(500);
-//   }
-// };
 
 exports.createParty = async (req, res) => {
   try {
@@ -141,93 +75,111 @@ exports.createParty = async (req, res) => {
 
 exports.checkIfUserHasParty = async (req, res) => {
   try {
-    const userEmail = req.params.email;
-    const user = await AuthTableOwner.findOne({
-      where: { user_email: userEmail },
-    });
-    if (user.party_id) {
-      // console.log('found');
+    const { email } = req.params;
+    const user = await AuthTableOwner.findOne({ where: { user_email: email } });
+
+    if (user && user['party_id']) {
       res.status(200);
-      res.send(user.party_id);
+      res.send({ status: 'User Found.', party_id: user['party_id'] });
     } else {
-      // user in db, but no partyId
-      // console.log('not found');
-      res.sendStatus(204);
+      res.status(404);
+      res.send({ status: 'User/Party not found.', party_id: false });
     }
   } catch (error) {
-    //user not in db OR server error (1st one more likely)
-    res.sendStatus(404);
+    res.status(500);
+    res.send({ status: 'Something went wrong.', party_id: false });
   }
 };
-
-// exports.checkIfUserHasParty = async (req, res) => {
-//   try {
-//   } catch (error) {
-//     res.status(500);
-//     res.send({ status: 'Something went wrong.' });
-//   }
-// };
 
 exports.deleteParty = async (req, res) => {
   try {
-    const id = req.body.id;
-    // reset owner's "partyId" column to ''
-    await AuthTableOwner.update(
-      {
-        party_id: '',
-      },
-      {
-        where: { party_id: id },
-      }
-    );
-    // delete the setInterval for that party.
-    clearInterval(mapOfIntervals[id]);
+    const { id } = req.body;
+    const party = await Party.findOne({ where: { party_id: id } });
 
-    // delete the row of that party from the Party table
-    await Party.destroy({
-      where: {
-        party_id: id,
-      },
-    });
-    res.status(200);
-    res.send(true);
+    if (party) {
+      // Update the AuthTableOwner table if the party exists.
+      await AuthTableOwner.update(
+        { party_id: '' },
+        { where: { party_id: id } }
+      );
+
+      // Clearing the interval map of the deleted party
+      clearInterval(mapOfIntervals[id]);
+
+      // Destroying party from the table
+      await Party.destroy({ where: { party_id: id } });
+      res.status(200);
+      res.send({ status: 'Party deleted successfully.', completed: true });
+    } else {
+      // Bad Request
+      res.status(404);
+      res.send({ status: 'Party does not exist.', completed: false });
+    }
   } catch (error) {
-    // one of the two not found so 404
-    res.sendStatus(404);
+    res.status(500);
+    console.log(error);
+    res.send({ status: 'Something went wrong.', completed: false });
   }
 };
 
+// exports.insertUrlInDb = async (req, res) => {
+//   try {
+//     // take variables from body
+//     const url = req.body.url;
+//     const partyId = req.body.partyId;
+//     // console.log('Arrived pic for party' + partyId + ' url: ' + url);
+//     // search the party in the db to get the url array of the pics
+//     const partyObj = await Party.findOne({
+//       where: { party_id: partyId },
+//     });
+//     // console.log('Prev url arr is: ' + partyObj.pics);
+//     // parse the url string into an actual array
+//     const picsArr = JSON.parse(partyObj.pics);
+//     // push the new pic url into that
+//     picsArr.push(url);
+//     // console.log('New pics arr is: ' + picsArr);
+//     // update the record in the db
+//     await Party.update(
+//       {
+//         pics: JSON.stringify(picsArr),
+//       },
+//       {
+//         where: { party_id: partyId },
+//       }
+//     );
+//     // all good
+//     res.status(200);
+//     res.send(true);
+//   } catch (error) {
+//     console.log(error);
+//     res.sendStatus(404);
+//   }
+// };
+
 exports.insertUrlInDb = async (req, res) => {
   try {
-    // take variables from body
-    const url = req.body.url;
-    const partyId = req.body.partyId;
-    // console.log('Arrived pic for party' + partyId + ' url: ' + url);
-    // search the party in the db to get the url array of the pics
-    const partyObj = await Party.findOne({
-      where: { party_id: partyId },
-    });
-    // console.log('Prev url arr is: ' + partyObj.pics);
-    // parse the url string into an actual array
-    const picsArr = JSON.parse(partyObj.pics);
-    // push the new pic url into that
-    picsArr.push(url);
-    // console.log('New pics arr is: ' + picsArr);
-    // update the record in the db
-    await Party.update(
-      {
-        pics: JSON.stringify(picsArr),
-      },
-      {
-        where: { party_id: partyId },
-      }
-    );
-    // all good
-    res.status(200);
-    res.send(true);
+    const { url } = req.body;
+    const { partyId } = req.body;
+    const party = await Party.findOne({ where: { party_id: partyId } });
+    if (party) {
+      const picsArr = JSON.parse(party.pics);
+      picsArr.push(url);
+      // Update the party to contain the image url.
+      await Party.update(
+        { pics: JSON.stringify(picsArr) },
+        { where: { party_id: partyId } }
+      );
+      res.status(200);
+      res.send({ status: 'Successfully sent to database.', completed: true });
+    } else {
+      // The scenario where there is no party to update
+      res.status(404);
+      res.send({ status: 'Party does not exist.', completed: false });
+    }
   } catch (error) {
+    res.status(500);
     console.log(error);
-    res.sendStatus(404);
+    res.send({ status: 'Something went wrong', completed: false });
   }
 };
 
