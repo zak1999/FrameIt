@@ -36,10 +36,10 @@ app.use(
     abortOnLimit: true,
   })
 );
-app.use((req, _, next) => {
-  console.log(req.headers.origin);
-  next();
-});
+// app.use((req, _, next) => {
+//   console.log(req.headers.origin);
+//   next();
+// });
 app.use(router);
 
 io.on('connection', (socket) => {

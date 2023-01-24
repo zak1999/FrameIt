@@ -46,8 +46,8 @@ exports.createOwner = async (req, res) => {
     const userExists = await checkIfUserExists(userInfo);
     // If the user exists, send back a status code
     if (userExists) {
-      res.status(403);
-      res.send({ status: 'User Already Exists' });
+      res.status(200);
+      res.send({ status: 'User Already Exists', email });
     } else {
       const created = await AuthTableOwner.create(userInfo);
       res.status(200);
