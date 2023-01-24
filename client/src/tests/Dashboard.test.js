@@ -1,5 +1,4 @@
-
-import { render, screen} from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { RouterProvider } from 'react-router-dom';
 import { router } from '../router';
 import { createOwner } from '../ApiServices';
@@ -9,21 +8,8 @@ import React from 'react';
 import DashButtons from '../components/DashButtons';
 import userEvent from '@testing-library/user-event';
 import LogButton from '../components/LogButton';
+import { sampleData } from './sampleData';
 
-const sampleData = {
-  user:{
-    email: "wag1@google.com",
-    email_verified: true,
-    sub: "google-oauth2|12345678901234",
-  },
-  logout: jest.fn(),
-  loginWithRedirect: jest.fn(),
-  getAccessTokenWithPopup: jest.fn(),
-  getAccessTokenSilently: jest.fn(),
-  getIdTokenClaims: jest.fn(),
-  loginWithPopup: jest.fn(),
-  isLoading: false,
-}
 const handleRedirect = jest.fn(); 
 const setAskConfirm = jest.fn();
 const handleDelete = jest.fn();
@@ -36,7 +22,7 @@ jest.mock('../ApiServices', ()=>({
   ...(jest.requireActual('../ApiServices')),
   createOwner: jest.fn() 
 }))
-describe('<Dashboard /> component tests: ', () => {
+describe('<Dashboard /> page component tests: ', () => {
   beforeEach(() => {
     useAuth0.mockReturnValue({
       isAuthenticated: true,

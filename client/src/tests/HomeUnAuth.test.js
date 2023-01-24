@@ -4,22 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { RouterProvider } from 'react-router-dom';
 import { router } from '../router';
 import Home from '../pages/Home';
-
-
-const sampleData = {
-  user:{
-    email: "wag1@google.com",
-    email_verified: true,
-    sub: "google-oauth2|12345678901234",
-  },
-  logout: jest.fn(),
-  loginWithRedirect: jest.fn(),
-  getAccessTokenWithPopup: jest.fn(),
-  getAccessTokenSilently: jest.fn(),
-  getIdTokenClaims: jest.fn(),
-  loginWithPopup: jest.fn(),
-  isLoading: false,
-}
+import { sampleData } from './sampleData';
 
 jest.mock("@auth0/auth0-react")
 
