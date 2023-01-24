@@ -135,7 +135,6 @@ exports.createParty = async (req, res) => {
     }
   } catch (error) {
     res.status(500);
-    console.log(error);
     res.send({ status: 'Something went wrong. Party not created.' });
   }
 };
@@ -160,6 +159,14 @@ exports.checkIfUserHasParty = async (req, res) => {
     res.sendStatus(404);
   }
 };
+
+// exports.checkIfUserHasParty = async (req, res) => {
+//   try {
+//   } catch (error) {
+//     res.status(500);
+//     res.send({ status: 'Something went wrong.' });
+//   }
+// };
 
 exports.deleteParty = async (req, res) => {
   try {
