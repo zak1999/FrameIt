@@ -70,17 +70,16 @@ function Dashboard(): JSX.Element {
   const handleDelete = async () => {
     setAskConfirm(false);
     const done = await deleteParty(partyId as string);
-    if (done === 'Not Found') {
-      return;
-    }
+    if (!done) return;
     setPartyId('');
-    return;
   };
-  if (loading) return (
-    <DashboardWrapper>
-      <Loading />      
-    </DashboardWrapper>
-  )
+
+  if (loading)
+    return (
+      <DashboardWrapper>
+        <Loading />
+      </DashboardWrapper>
+    );
 
   return (
     <DashboardWrapper>
@@ -88,31 +87,37 @@ function Dashboard(): JSX.Element {
         <div className="firstHalfDash">
           <h2>Our Server is 📉</h2>
         </div>
-        ) : ( 
+      ) : (
         <>
           <div className="firstHalfDash">
             {isAuthenticated && (
               <>
-              <div className="hello">
-                {' '}
-                Hello {(user && user.given_name) || ''}!{' '}
-              </div>
-              {partyId ? (
-                <DashButtons handleRedirect={handleRedirect} setAskConfirm={setAskConfirm}
-                handleDelete={handleDelete} confirm={confirm} askConfirm={askConfirm} />
-              ) : (
-                <LogButton onClick={(e) => handleCreate(e)}>
-                  CREATE A PARTY 📸
-                </LogButton>
-              )}
+                <div className="hello">
+                  {' '}
+                  Hello {(user && user.given_name) || ''}!{' '}
+                </div>
+                {partyId ? (
+                  <DashButtons
+                    handleRedirect={handleRedirect}
+                    setAskConfirm={setAskConfirm}
+                    handleDelete={handleDelete}
+                    confirm={confirm}
+                    askConfirm={askConfirm}
+                  />
+                ) : (
+                  <LogButton onClick={(e) => handleCreate(e)}>
+                    CREATE A PARTY 📸
+                  </LogButton>
+                )}
               </>
             )}
           </div>
           <div className="navButton">
-            {isAuthenticated ? 
-            <LogButton onClick={() => logout()}>LOGOUT</LogButton> 
-            :<LogButton onClick={() => loginWithRedirect()}>LOGIN</LogButton>
-            }
+            {isAuthenticated ? (
+              <LogButton onClick={() => logout()}>LOGOUT</LogButton>
+            ) : (
+              <LogButton onClick={() => loginWithRedirect()}>LOGIN</LogButton>
+            )}
           </div>
         </>
       )}

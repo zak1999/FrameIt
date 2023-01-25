@@ -1,5 +1,5 @@
 const express = require('express');
-const { startSetIntervals } = require('./controllers/controller');
+const { startSetIntervals } = require('./controllers/partyController');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const router = require('./router');
@@ -10,7 +10,7 @@ const server = http.createServer(app);
 const socketIo = require('socket.io');
 
 /* global io */
-var whitelist = ['https://frame-it.vercel.app', 'http://localhost:3000'];
+const whitelist = ['https://frame-it.vercel.app', 'http://localhost:3000'];
 global.io = socketIo(server, {
   cors: {
     origin: whitelist,
@@ -36,10 +36,6 @@ app.use(
     abortOnLimit: true,
   })
 );
-// app.use((req, _, next) => {
-//   console.log(req.headers.origin);
-//   next();
-// });
 app.use(router);
 
 io.on('connection', (socket) => {

@@ -121,26 +121,32 @@ exports.insertUrlInDb = async (req, res) => {
 
 exports.getSocketRoom = async (req, res) => {
   try {
-    const partyId = req.params.id;
-    const party = await Party.findOne({
-      where: { party_id: partyId },
-    });
+    const { id } = req.params;
+    const party = await Party.findOne({ where: { party_id: id } });
 
     // If the party exists, then we have a 200 status, else a 404
-    res.status = 200;
-    res.send({ socket_room_id: party.socket_room_id });
+    if (party && party['socket_room_id']) {
+      res.status(200);
+      res.send({
+        status: 'Party/SocketId Found.',
+        socket_room_id: party['socket_room_id'],
+      });
+    } else {
+      res.status(404);
+      res.send({ status: 'Party/SocketId Not Found', socket_room_id: '' });
+    }
   } catch (error) {
-    // console.log(error);
-    res.sendStatus(500);
+    res.status(500);
+    res.send({ status: 'Something went wrong.', socket_room_id: '' });
   }
 };
 
 exports.socketIoUpdateParty = async (socketRoom, id) => {
   try {
-    let partyObj = await Party.findOne({
+    const partyObj = await Party.findOne({
       where: { party_id: id },
     });
-    let picsArr = JSON.parse(partyObj.pics);
+    const picsArr = JSON.parse(partyObj.pics);
     io.to(socketRoom).emit('pics', picsArr);
   } catch (error) {
     // console.log(error);
@@ -160,17 +166,16 @@ exports.triggerSocket = async (socketRoom, partyId) => {
 exports.startSetIntervals = async () => {
   // go into Party, take every party_id, with every socket_room_id
   // and call socketIoUpdateParty on them.
-  let parties = await Party.findAll();
-  for (let party of parties) {
-    let id = party.dataValues.party_id;
+  const parties = await Party.findAll();
+  for (const party of parties) {
+    const id = party.dataValues['party_id'];
     // call the function, wait for the id of the interval, then save in the party table
-    let interval = await this.triggerSocket(
-      party.dataValues.socket_room_id,
+    const interval = await this.triggerSocket(
+      party.dataValues['socket_room_id'],
       id
     );
 
     // save the intervalId into the map of Intervals.
     mapOfIntervals[id] = interval;
   }
-  return;
 };

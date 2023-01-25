@@ -13,9 +13,7 @@ export function generateRandomString(length: number): string {
 // ✅
 export async function createOwner(userEmail: string): Promise<boolean> {
   try {
-    const data = {
-      email: userEmail,
-    };
+    const data = { email: userEmail };
     const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/users/owner`,
       {
@@ -46,17 +44,17 @@ export async function createParty(email: string): Promise<string> {
       body: JSON.stringify(data),
     }
   );
-  const res = await response.json();
-  const { party_id } = res;
+  const result = await response.json();
+  const { party_id } = result;
   return party_id;
 }
 
-export async function checkForParty(email: string): Promise<boolean | string> {
+export async function checkForParty(email: string): Promise<string> {
   const response = await fetch(
     `${process.env.REACT_APP_BACKEND_URL}/users/info/party/${email}`
   );
-  const res = await response.json();
-  return res['party_id'];
+  const result = await response.json();
+  return result['party_id'];
 }
 
 export async function deleteParty(id: string): Promise<string> {
@@ -67,8 +65,8 @@ export async function deleteParty(id: string): Promise<string> {
     },
     body: JSON.stringify({ id }),
   });
-  const res = await response.json();
-  return res['completed'];
+  const result = await response.json();
+  return result['completed'];
 }
 
 export async function sendImage(imageData: Blob): Promise<string> {
@@ -102,19 +100,20 @@ export async function sendUrlToDb(url: string, id: string): Promise<string> {
       body: JSON.stringify(data),
     }
   );
-  const res = await response.json();
-  return res['completed'];
+  const result = await response.json();
+  return result['completed'];
 }
 
-export async function getSocketRoomId(id: string | undefined): Promise<string> {
+export async function getSocketRoomId(id: string): Promise<string> {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/party/socketRoom/${id}`
     );
-    // .then((response) => response.text());
+    // Will return the socket room ID or '' if something goes wrong in the backend.
     const { socket_room_id } = await response.json();
     return socket_room_id;
   } catch (error) {
+    // Return an empty string if something goes wrong within this try-catch.
     return '';
   }
 }

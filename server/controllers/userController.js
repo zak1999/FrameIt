@@ -38,10 +38,10 @@ exports.checkIfUserHasParty = async (req, res) => {
       res.send({ status: 'User Found.', party_id: user['party_id'] });
     } else {
       res.status(404);
-      res.send({ status: 'User/Party not found.', party_id: false });
+      res.send({ status: 'User/Party not found.', party_id: '' });
     }
   } catch (error) {
     res.status(500);
-    res.send({ status: 'Something went wrong.', party_id: false });
+    res.send({ status: 'Something went wrong.', party_id: '' });
   }
 };

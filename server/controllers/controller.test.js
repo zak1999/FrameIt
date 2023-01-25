@@ -56,18 +56,6 @@ describe('Controller Testing', () => {
   });
 
   describe('Creating a Party', () => {
-    // // Create a dummy user
-    // beforeEach(async () => {
-    //   const mockUser = { user_email: 'user@email.com' };
-    //   await AuthTableOwner.create(mockUser);
-    // });
-    // // Reset / Delete this user each time
-    // afterEach(async () => {
-    //   await AuthTableOwner.destroy({
-    //     where: { user_email: 'user@email.com' },
-    //   });
-    // });
-
     it('Should not create a party if the user does not exist', async () => {
       const res = await request
         .post('/users/party/create')
@@ -117,8 +105,6 @@ describe('Controller Testing', () => {
       const { party_id } = user;
       expect(res1.body).toEqual({ status: 'Party Created', party_id });
       expect(res1.status).toBe(200);
-
-      // const party = await Party.findOne({ where: { party_id: party_id } });
 
       // Testing if the user and the partyId already exists
       const res2 = await request
@@ -190,7 +176,7 @@ describe('Controller Testing', () => {
       expect(res1.status).toBe(404);
       expect(res1.body).toEqual({
         status: 'User/Party not found.',
-        party_id: false,
+        party_id: '',
       });
 
       // Creating a party for a user
@@ -304,10 +290,13 @@ describe('Controller Testing', () => {
 
       const res2 = await request.get(`/party/socketRoom/${party.party_id}`);
       expect(res2.status).toBe(200);
-      expect(res2.body).toEqual({ socket_room_id: 'socketTester' });
+      expect(res2.body).toEqual({
+        status: 'Party/SocketId Found.',
+        socket_room_id: 'socketTester',
+      });
 
       const res1 = await request.get('/party/socketRoom/incorrectId');
-      expect(res1.status).toBe(500);
+      expect(res1.status).toBe(404);
 
       await Party.destroy({ where: { party_id: 'partyTester' } });
     });
