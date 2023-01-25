@@ -29,16 +29,4 @@ describe('<PartyRoomOwner /> page component tests: ', () => {
       await userEvent.click(ShareButtonOnScreen)
       expect(handleShare).toHaveBeenCalled()
   })
-//   it("Clicking 'TAKE PICS FORM UR PARTY' button should run goToPh()", async () => {
-//   const setRoomExists = jest.fn()
-//   jest.spyOn(React, 'useState').mockImplementation(() => [true, setRoomExists])
-//   const {container} = render(
-//     <RouterProvider router={router}>
-//       <PartyRoomOwner/>
-//     </RouterProvider>
-//   )
-//   const goToPhButton = container.querySelector('#go-to-ph-btn')
-//   await userEvent.click(goToPhButton)
-//   expect(goToPh).toHaveBeenCalled()
-// })
 })
