@@ -12,13 +12,14 @@ type DashButtonsProps = {
 export default function DashButtons({handleRedirect, setAskConfirm, handleDelete, confirm, askConfirm} : DashButtonsProps): JSX.Element {
   return (
     <div className="dashButtons">
-      <button className="mainButton" onClick={handleRedirect}>
+      <button id='go-to-ur-party-btn'  className="mainButton" onClick={handleRedirect}>
         GO TO UR PARTY
       </button>
       <button
         className={
           askConfirm ? 'mainButton invisible' : 'mainButton'
         }
+        id='delete-btn'
         onClick={confirm}
       >
         DELETE CURRENT PARTY

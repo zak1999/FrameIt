@@ -1,24 +1,9 @@
-import { render, screen, waitFor, container, rerender,cleanup } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { RouterProvider } from 'react-router-dom';
 import { router } from '../router';
 import Home from '../pages/Home';
-
-//this object represents 
-const sampleData = {
-  user:{
-    email: "wag1@google.com",
-    email_verified: true,
-    sub: "google-oauth2|12345678901234",
-  },
-  logout: jest.fn(),
-  loginWithRedirect: jest.fn(),
-  getAccessTokenWithPopup: jest.fn(),
-  getAccessTokenSilently: jest.fn(),
-  getIdTokenClaims: jest.fn(),
-  loginWithPopup: jest.fn(),
-  isLoading: false,
-}
+import { sampleData } from './sampleData';
 
 jest.mock("@auth0/auth0-react")
   describe('<Home /> component tests for authenticated user', () => {
@@ -37,4 +22,3 @@ jest.mock("@auth0/auth0-react")
     }); 
     afterEach(()=>useAuth0.mockClear()) 
   })
-

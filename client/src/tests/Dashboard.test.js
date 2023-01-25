@@ -1,85 +1,90 @@
-
 import { render } from '@testing-library/react';
 import { RouterProvider } from 'react-router-dom';
 import { router } from '../router';
 import { createOwner } from '../ApiServices';
 import { useAuth0 } from '@auth0/auth0-react';
 import Dashboard from '../pages/Dashboard';
-import { useState } from 'react';
+import React from 'react';
+import DashButtons from '../components/DashButtons';
+import userEvent from '@testing-library/user-event';
+import LogButton from '../components/LogButton';
+import { sampleData } from './sampleData';
 
-const sampleData = {
-  user:{
-    email: "wag1@google.com",
-    email_verified: true,
-    sub: "google-oauth2|12345678901234",
-  },
-  logout: jest.fn(),
-  loginWithRedirect: jest.fn(),
-  getAccessTokenWithPopup: jest.fn(),
-  getAccessTokenSilently: jest.fn(),
-  getIdTokenClaims: jest.fn(),
-  loginWithPopup: jest.fn(),
-  isLoading: false,
-}
+const handleRedirect = jest.fn(); 
+const setAskConfirm = jest.fn();
+const handleDelete = jest.fn();
+const confirm = jest.fn();
+const askConfirm = true;
+const logout = jest.fn();
 
 jest.mock("@auth0/auth0-react")
-
-jest.mock('react', ()=>({
-  ...jest.requireActual('react'),
-  useState: jest.fn()
-}))
 jest.mock('../ApiServices', ()=>({
   ...(jest.requireActual('../ApiServices')),
   createOwner: jest.fn() 
 }))
-
-describe('<Dashboard /> component tests: ', () => {
+describe('<Dashboard /> page component tests: ', () => {
   beforeEach(() => {
     useAuth0.mockReturnValue({
       isAuthenticated: true,
       ...sampleData
     })
-    useState.mockImplementation(jest.requireActual('react').useState);
   })
-  it('createOwner() function runs on the load of the page',async () => {
-    const { container } = render(
+
+  it('createOwner() function runs on the load of the page', async () => {
+    render(
       <RouterProvider router={router}>
         <Dashboard/>
       </RouterProvider>
       )
     expect(createOwner).toHaveBeenCalled()
   })
-  
-  // if user has a party, 'got to party' btn appears
-  
-  it('createOwner() function runs on the load of the page',async () => {
-    // useState.mockImplementation(()=>[true, setPartyId])
-    const x = render(
-      <RouterProvider router={router}>
-        <Dashboard/>
-      </RouterProvider>
-      )
-    expect(createOwner).toHaveBeenCalled()
-    })
-  
-  
-  
-  
+
+  it("Clicking 'GO TO UR PARTY' button invokes handleRedirect()", async () => {
+    const {container} = render(
+    <DashButtons handleRedirect={handleRedirect} setAskConfirm={setAskConfirm}
+      handleDelete={handleDelete} confirm={confirm} askConfirm={askConfirm} />
+    )
+    const goToPartyButton = container.querySelector('#go-to-ur-party-btn')
+    await userEvent.click(goToPartyButton)
+    expect(handleRedirect).toHaveBeenCalled()
   })
 
+  it("Clicking 'DELETE CURRENT PARTY' button invokes confirm()", async () => {  
+    const {container} = render(
+    <DashButtons handleRedirect={handleRedirect} setAskConfirm={setAskConfirm}
+      handleDelete={handleDelete} confirm={confirm} askConfirm={askConfirm} />
+    )
+    const deleteButton = container.querySelector('#delete-btn')
+    await userEvent.click(deleteButton)
+    expect(confirm).toHaveBeenCalled()
+  })
+  
+  it("Clicking 'DELETE CURRENT PARTY' button invokes confirm()", async () => {  
+    const {container} = render(
+    <DashButtons handleRedirect={handleRedirect} setAskConfirm={setAskConfirm}
+      handleDelete={handleDelete} confirm={confirm} askConfirm={askConfirm} />
+    )
+    const deleteButton = container.querySelector('#delete-btn')
+    await userEvent.click(deleteButton)
+    expect(confirm).toHaveBeenCalled()
+  })
+  
+  it("Clicking 'LOGOUT' button invokes logout()", async () => {  
+    const {container} = render(<LogButton id="logout-btn" onClick={logout}/>)
+    const logoutButton = container.querySelector('#logout-btn')
+    await userEvent.click(logoutButton)
+    expect(logout).toHaveBeenCalled()
+  })
 
-// if user has a party, 'delete' btn appears 
-
-// if does not have a party, 'create a party ' btn appears 
-
-//if user presses 'got to ur party btn' then handleRedirect() runs 
-
-// on 'delete btn' click, user is asked to confirm
-
-// on 'confirm' click, handleDelete() runs
-
-// on presss of 'logout' btn user lougt()
-
-// if user is unathenticated, send him back to home page
+  it("Clicking 'YES' button when prompted to confirm delete invokes handleDelete()", async () => {  
+    const {container} = render(
+      <DashButtons handleRedirect={handleRedirect} setAskConfirm={setAskConfirm}
+      handleDelete={handleDelete} confirm={confirm} askConfirm={askConfirm} />
+    )
+    const confirmYes = container.getElementsByClassName('confirmYes')[0]
+    await userEvent.click(confirmYes)
+    expect(handleDelete).toHaveBeenCalled()
+  })
+})
 
 

@@ -9,6 +9,8 @@ import Navbar from '../components/Navbar';
 
 import '../styles/Dashboard.css';
 import '../styles/animations.css';
+import DashboardWrapper from '../components/DashboardWrapper';
+import ShareButton from '../components/ShareButton';
 
 function PartyRoomOwner(): JSX.Element {
   const { id } = useParams();
@@ -27,11 +29,11 @@ function PartyRoomOwner(): JSX.Element {
     }
     fetchRoom();
 
-    // if (navigator.share) {
-    //   setCanShare(true);
-    // } else {
-    //   setCanShare(false);
-    // }
+    if (!navigator.share) {
+      setCanShare(false);
+    } else {
+      setCanShare(true);
+    }
   }, []);
 
   function handleShare() {
@@ -63,8 +65,7 @@ function PartyRoomOwner(): JSX.Element {
   };
 
   return (
-    <div className="dashboardWrapper">
-      <Navbar />
+    <DashboardWrapper>
       {isAuthenticated && roomExists ? (
         <>
           <div className="qrWrap">
@@ -75,16 +76,8 @@ function PartyRoomOwner(): JSX.Element {
               size={130}
               value={`https://frame-it.vercel.app/party/${id}/ph`}
             />
-            <button className="mainButton" onClick={handleShare}>
-              {canShare ? (
-                <span>SHARE</span>
-              ) : !copied ? (
-                <span>COPY 🔖</span>
-              ) : (
-                <span>COPIED ✅</span>
-              )}
-            </button>
-            <button className="mainButton" onClick={goToPh}>
+            <ShareButton canShare={canShare} copied={copied} onClick={handleShare}/>
+            <button className="mainButton" id='go-to-ph-btn' onClick={goToPh}>
               TAKE PICS FOR UR PARTY
             </button>
           </div>
@@ -95,7 +88,7 @@ function PartyRoomOwner(): JSX.Element {
       ) : (
         <h1>Wrong Party :C</h1>
       )}
-    </div>
+    </DashboardWrapper>
   );
 }
 
