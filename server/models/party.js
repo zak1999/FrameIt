@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const Image = require('./images.js');
+const Image = require('./image.js');
 const sequelize = require('./index.js')
 
 const Party = sequelize.define('Party', {
@@ -16,10 +16,6 @@ const Party = sequelize.define('Party', {
     primaryKey: true,
     autoIncrement: true,
     allowNull: false
-  },
-  pics: {
-    type: DataTypes.TEXT,
-    allowNull: true
   },
   socket_room_id: {
     type: DataTypes.STRING,

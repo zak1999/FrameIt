@@ -3,6 +3,8 @@ const router = require('../router');
 const supertest = require('supertest');
 const AuthTableOwner = require('../models/authTableOwner');
 const Party = require('../models/party');
+const Image = require('../models/image');
+
 const Sequelize = require('sequelize');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -239,10 +241,9 @@ describe('Controller Testing', () => {
       const res2 = await request
         .post('/party/upload')
         .send({ url: 'testing_url', partyId: party_id });
-
-      const updatedParty = await Party.findOne({
-        where: { party_id: party_id },
-      });
+        
+      const allImageObjects = await Image.findAll({where:{party_id:party_id}})
+      const picsArr = allImageObjects.map((picRecord)=>picRecord.url) 
       // console.log(updatedParty.pics);
 
       expect(res2.status).toBe(200);
@@ -250,7 +251,7 @@ describe('Controller Testing', () => {
         status: 'Successfully sent to database.',
         completed: true,
       });
-      expect(updatedParty.pics).toBe('["testing_url"]');
+      expect(picsArr).toContain('testing_url');
 
       // Clear the AuthTableOwner and Party entries.
       await AuthTableOwner.destroy({
