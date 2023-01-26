@@ -1,25 +1,26 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./index.js')
 
-const AuthTableUser = sequelize.define('AuthTableUser', {
-  user_email: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
+const Image = sequelize.define('Image', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     allowNull: false
   },
+  url: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
   party_id: {
     type: DataTypes.STRING,
-    allowNull: true
-  }
+    allowNull: false
+  },
 })
 
+
 async function synchronize() {
-  await AuthTableUser.sync(); 
+  await Image.sync();
 } synchronize();
 
-module.exports = AuthTableUser;
+module.exports = Image;

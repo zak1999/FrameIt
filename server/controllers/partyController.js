@@ -1,4 +1,5 @@
 const Party = require('../models/party');
+const Image = require('../models/images');
 const AuthTableOwner = require('../models/authTableOwner');
 const { generateRandomString } = require('../helpers/helpers');
 const path = require('path');
@@ -61,6 +62,8 @@ exports.deleteParty = async (req, res) => {
 
       // Destroying party from the table
       await Party.destroy({ where: { party_id: id } });
+      await Image.destroy({ where: { party_id: id } });
+      
       res.status(200);
       res.send({ status: 'Party deleted successfully.', completed: true });
     } else {
@@ -97,14 +100,21 @@ exports.insertUrlInDb = async (req, res) => {
     const { url } = req.body;
     const { partyId } = req.body;
     const party = await Party.findOne({ where: { party_id: partyId } });
+    // if (party) {
+    //   const picsArr = JSON.parse(party.pics);
+    //   picsArr.push(url);
+    //   // Update the party to contain the image url.
+    //   await Party.update(
+    //     { pics: JSON.stringify(picsArr) },
+    //     { where: { party_id: partyId } }
+    //   );
+    //   res.status(200);
+    //   res.send({ status: 'Successfully sent to database.', completed: true });
     if (party) {
-      const picsArr = JSON.parse(party.pics);
-      picsArr.push(url);
-      // Update the party to contain the image url.
-      await Party.update(
-        { pics: JSON.stringify(picsArr) },
-        { where: { party_id: partyId } }
-      );
+      await Image.create({
+        url:url,
+        party_id:partyId
+      })
       res.status(200);
       res.send({ status: 'Successfully sent to database.', completed: true });
     } else {
@@ -143,10 +153,12 @@ exports.getSocketRoom = async (req, res) => {
 
 exports.socketIoUpdateParty = async (socketRoom, id) => {
   try {
-    const partyObj = await Party.findOne({
-      where: { party_id: id },
-    });
-    const picsArr = JSON.parse(partyObj.pics);
+    // const partyObj = await Party.findOne({
+    //   where: { party_id: id },
+    // });
+    const allImageObjects = await Image.findAll({where:{party_id:id}})
+    const picsArr = allImageObjects.map((picRecord)=>picRecord.url)
+    // const picsArr = JSON.parse(partyObj.pics);
     io.to(socketRoom).emit('pics', picsArr);
   } catch (error) {
     // console.log(error);

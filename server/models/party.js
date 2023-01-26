@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+const Image = require('./images.js');
 const sequelize = require('./index.js')
 
 const Party = sequelize.define('Party', {
