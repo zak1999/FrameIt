@@ -105,7 +105,10 @@ function Dashboard(): JSX.Element {
                     askConfirm={askConfirm}
                   />
                 ) : (
-                  <LogButton onClick={(e) => handleCreate(e)}>
+                  <LogButton
+                    id="test-create-party"
+                    onClick={(e) => handleCreate(e)}
+                  >
                     CREATE A PARTY 📸
                   </LogButton>
                 )}
