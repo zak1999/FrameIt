@@ -9,7 +9,6 @@ export default function Loading(): JSX.Element {
         height="90"
         width="90"
         ariaLabel="MagnifyingGlass-loading"
-        // wrapperStyle={{}}
         wrapperClass="MagnifyingGlass-wrapper"
         glassColor="#ecbef7"
         color="#8139d1"

@@ -244,8 +244,6 @@ describe('Controller Testing', () => {
         
       const allImageObjects = await Image.findAll({where:{party_id:party_id}})
       const picsArr = allImageObjects.map((picRecord)=>picRecord.url) 
-      // console.log(updatedParty.pics);
-
       expect(res2.status).toBe(200);
       expect(res2.body).toEqual({
         status: 'Successfully sent to database.',

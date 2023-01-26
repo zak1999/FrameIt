@@ -1,6 +1,5 @@
 import Navbar from '../components/Navbar';
 import { Link } from 'react-router-dom';
-import { ReactNode } from 'react';
 import '../styles/Dashboard.css';
 
 function NoPage(): JSX.Element {

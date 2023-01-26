@@ -1,10 +1,7 @@
 import { render } from '@testing-library/react';
-import { RouterProvider } from 'react-router-dom';
-import { router } from '../router';
 import { useAuth0 } from '@auth0/auth0-react';
 import React from 'react';
 import { sampleData } from './sampleData';
-import PartyRoomOwner from '../pages/PartyRoomOwner';
 import ShareButton from '../components/ShareButton';
 import userEvent from '@testing-library/user-event';
 

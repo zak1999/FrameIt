@@ -17,8 +17,6 @@ const Image = sequelize.define('Image', {
     allowNull: false
   },
 })
-
-
 async function synchronize() {
   await Image.sync();
 } synchronize();

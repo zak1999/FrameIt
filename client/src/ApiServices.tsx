@@ -1,4 +1,3 @@
-// ✅
 export function generateRandomString(length: number): string {
   let result: string = '';
   const characters: string =
@@ -10,7 +9,6 @@ export function generateRandomString(length: number): string {
   return result;
 }
 
-// ✅
 export async function createOwner(userEmail: string): Promise<boolean> {
   try {
     const data = { email: userEmail };
@@ -31,7 +29,6 @@ export async function createOwner(userEmail: string): Promise<boolean> {
   }
 }
 
-// ✅
 export async function createParty(email: string): Promise<string> {
   const data = { email };
   const response = await fetch(

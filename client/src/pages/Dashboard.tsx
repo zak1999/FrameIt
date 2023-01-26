@@ -1,4 +1,3 @@
-// import React from 'react';
 import { useEffect, useState, MouseEvent, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -32,7 +31,6 @@ function Dashboard(): JSX.Element {
       if (isAuthenticated) {
         const userEmail = user && user.email ? user.email : '';
         const up = await createOwner(userEmail);
-        // const up = await createOwner(user.email);
         setIsUp(up);
 
         setTimeout(() => {

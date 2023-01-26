@@ -1,5 +1,4 @@
 import React from 'react';
-import { ReactNode } from 'react';
 
 type ConfirmDeleteProps = {
   functionIfYes:() => void;

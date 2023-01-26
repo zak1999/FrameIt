@@ -5,7 +5,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import PhotosGrid from '../components/PhotosGrid';
-import Navbar from '../components/Navbar';
 
 import '../styles/Dashboard.css';
 import '../styles/animations.css';
@@ -41,7 +40,7 @@ function PartyRoomOwner(): JSX.Element {
       navigator
         .share({
           title: 'FrameIt - Room',
-          url: `https://frame-it.vercel.app/party/${id}/ph`,
+          url: `${process.env.REACT_APP_HOST_URL}/party/}${id}/ph`,
         })
         .then(() => {
           console.log('Thanks for sharing!');
@@ -53,7 +52,7 @@ function PartyRoomOwner(): JSX.Element {
   }
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(`https://frame-it.vercel.app/party/${id}/ph`);
+    navigator.clipboard.writeText(`${process.env.REACT_APP_HOST_URL}/party/${id}/ph`);
     setCopied(true);
     setTimeout(() => {
       setCopied(false);
@@ -74,7 +73,7 @@ function PartyRoomOwner(): JSX.Element {
               bgColor="transparent"
               id="dash-qr"
               size={130}
-              value={`https://frame-it.vercel.app/party/${id}/ph`}
+              value={`${process.env.REACT_APP_HOST_URL}/party/${id}/ph`}
             />
             <ShareButton canShare={canShare} copied={copied} onClick={handleShare}/>
             <button className="mainButton" id='go-to-ph-btn' onClick={goToPh}>
