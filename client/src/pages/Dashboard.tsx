@@ -81,36 +81,45 @@ function Dashboard(): JSX.Element {
       </DashboardWrapper>
     );
 
-  if (!isUp) return (
-    <div className="firstHalfDash">
-      <h2>Our Server is 📉</h2>
-    </div>
-  )
+  if (!isUp)
+    return (
+      <div className="firstHalfDash">
+        <h2>Our Server is 📉</h2>
+      </div>
+    );
   return (
     <DashboardWrapper>
       <div className="firstHalfDash">
         {isAuthenticated && (
           <>
-          <div className="hello">
-            {' '}
-            Hello {(user && user.given_name) || ''}!{' '}
-          </div>
-          {partyId ? (
-            <DashButtons handleRedirect={handleRedirect} setAskConfirm={setAskConfirm}
-            handleDelete={handleDelete} confirm={confirm} askConfirm={askConfirm} />
-          ) : (
-            <LogButton onClick={(e) => handleCreate(e)}>
-              CREATE A PARTY 📸
-            </LogButton>
-          )}
+            <div className="hello">
+              {' '}
+              Hello {(user && user.given_name) || ''}!{' '}
+            </div>
+            {partyId ? (
+              <DashButtons
+                handleRedirect={handleRedirect}
+                setAskConfirm={setAskConfirm}
+                handleDelete={handleDelete}
+                confirm={confirm}
+                askConfirm={askConfirm}
+              />
+            ) : (
+              <LogButton onClick={(e) => handleCreate(e)}>
+                CREATE A PARTY 📸
+              </LogButton>
+            )}
           </>
         )}
       </div>
       <div className="navButton">
-        {isAuthenticated ? 
-        <LogButton id="logout-btn" onClick={() => logout()}>LOGOUT</LogButton> 
-        :<LogButton onClick={() => loginWithRedirect()}>LOGIN</LogButton>
-        }
+        {isAuthenticated ? (
+          <LogButton id="logout-btn" onClick={() => logout()}>
+            LOGOUT
+          </LogButton>
+        ) : (
+          <LogButton onClick={() => loginWithRedirect()}>LOGIN</LogButton>
+        )}
       </div>
     </DashboardWrapper>
   );

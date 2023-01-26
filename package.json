@@ -1,5 +1,9 @@
 {
   "dependencies": {
-    "@types/auth0": "^2.35.9"
+    "@types/auth0": "^2.35.9",
+    "cypress": "^12.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.4"
   }
 }
