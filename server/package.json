@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "deploy": "rsync -aP --exclude 'node_modules' ~/Desktop/FrameIT/server/ root@165.232.114.202:/root/apps/FrameIt/server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
@@ -16,12 +16,15 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
+    "jest": "^29.3.1",
+    "mocha": "^10.2.0",
     "pg": "^8.8.0",
     "save-dev": "^0.0.1-security",
     "sequelize": "^6.28.0",
     "socket.io": "^4.5.4"
   },
   "devDependencies": {
-    "eslint": "^8.31.0"
+    "eslint": "^8.31.0",
+    "supertest": "^6.3.3"
   }
 }

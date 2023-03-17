@@ -1,32 +1,33 @@
-import React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Grid } from 'react-loader-spinner';
-import { getSocketRoomId } from '../ApiServices';
 import { io } from 'socket.io-client';
-import { useState } from 'react';
-import { generateRandomString } from '../ApiServices';
+import { generateRandomString, getSocketRoomId } from '../ApiServices';
 import '../styles/animations.css';
 import '../styles/Dashboard.css';
+import LogButton from './LogButton';
 
+type PhotosGridProps = {
+  id: string;
+};
 /*
   Here you:
-  1. get the array of photos from the database (socket.io) 
-  2. map it, displaying a photo component for every one of them 
+  1. get the array of photos from the database (socket.io)
+  2. map it, displaying a photo component for every one of them
   */
 
-function PhotosGrid({ id }) {
-  const [buffer, setBuffer] = useState([]);
-  const [photos, setPhotos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalUrl, setModalUrl] = useState('');
+function PhotosGrid({ id }: PhotosGridProps) {
+  const [buffer, setBuffer] = useState<string[]>([]);
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [modalUrl, setModalUrl] = useState<string>('');
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 7000);
 
-    const socket = io('https://www.frameit.social');
+    const socket = io(`${process.env.REACT_APP_BACKEND_URL}`);
     socket.on('connect_error', () => {
       setTimeout(() => socket.connect(), 3000);
     });
@@ -52,7 +53,7 @@ function PhotosGrid({ id }) {
     setPhotos(buffer);
   }, [buffer]);
 
-  function openModal(picUrl) {
+  function openModal(picUrl: string) {
     setModalOpen(true);
     setModalUrl(picUrl);
   }
@@ -62,7 +63,7 @@ function PhotosGrid({ id }) {
     setModalUrl('');
   }
 
-  async function downloadImage(imageSrc) {
+  async function downloadImage(imageSrc: string) {
     const image = await fetch(imageSrc);
     const imageBlog = await image.blob();
     const imageURL = URL.createObjectURL(imageBlog);
@@ -82,13 +83,14 @@ function PhotosGrid({ id }) {
         onClick={closeModal}
       >
         <img src={modalUrl} className="innerModal"></img>
-        <button
-          className="logButton zidx"
+        <LogButton
+          className="zidx"
           onClick={() => downloadImage(modalUrl)}
         >
           DOWNLOAD ⬇️
-        </button>
+        </LogButton>
       </div>
+
       <div className={loading ? 'loaderWrap' : 'invisible'}>
         <Grid
           height="80"
@@ -101,6 +103,7 @@ function PhotosGrid({ id }) {
           visible={true}
         />
       </div>
+
       <div className="container">
         <div className="gridContainer">
           {photos.map((pic, idx) => {
@@ -115,7 +118,6 @@ function PhotosGrid({ id }) {
             );
           })}
         </div>
-        {/* )} */}
       </div>
     </div>
   );
